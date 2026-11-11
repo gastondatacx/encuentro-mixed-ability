@@ -120,7 +120,7 @@ export const schedule: ScheduleDay[] = [
     dayLabel: "Día 1",
     tag: "La bienvenida",
     title: "Apertura y recepción de delegaciones",
-    subtitle: "Acreditaciones, desfile inaugural y tercer tiempo",
+    subtitle: "Acreditaciones, desfile inaugural, fiesta y ágape de bienvenida",
     items: [
       {
         start: "17:30",
@@ -138,9 +138,9 @@ export const schedule: ScheduleDay[] = [
         description: "Ingreso de equipos, banderas y palabras de bienvenida.",
       },
       {
-        start: "19:00",
-        title: "Charlas informativas y actividades recreativas",
-        description: "Charlas informativas (profes) y actividades recreativas (jugadores/as).",
+        start: "19:30",
+        title: "Fiesta de bienvenida (Murga, Baile y Música)",
+        description: "Celebración de apertura con murga, baile y música junto a todas las delegaciones.",
       },
       {
         start: "20:00",
@@ -157,7 +157,7 @@ export const schedule: ScheduleDay[] = [
     dayLabel: "Día 2",
     tag: "Acción y fiesta",
     title: "Jornada central de partidos y cierre",
-    subtitle: "Competencia simultánea, ceremonia de premiación y Gran Fiesta Mixed Ability",
+    subtitle: "Dos rondas de partidos, ceremonia de cierre y Gran Fiesta Mixed Ability",
     items: [
       {
         start: "09:00",
@@ -166,29 +166,30 @@ export const schedule: ScheduleDay[] = [
       },
       {
         start: "10:00",
-        title: "Partidos",
+        end: "12:30",
+        title: "1ra ronda de partidos",
         description: "Inicio de competencia simultánea. Partidos de 15 a 20 min.",
       },
       {
         start: "12:30",
-        end: "13:30",
-        title: "Pausa activa / Almuerzo",
+        end: "14:00",
+        title: "Pausa Activa / Almuerzo",
         description: "Reparto de viandas nutritivas gestionado por logística.",
       },
       {
-        start: "13:30",
-        end: "16:00",
-        title: "Definiciones y últimos partidos",
+        start: "14:00",
+        end: "16:30",
+        title: "2da ronda de partidos",
         description: "Cruces de integración, definiciones y últimos encuentros.",
       },
       {
-        start: "16:00",
-        end: "19:00",
-        title: "Descanso / Vuelta al hotel",
-        description: "Tiempo libre y regreso al hotel antes del gran cierre.",
+        start: "16:30",
+        end: "19:30",
+        title: "Descanso / Vuelta al hotel / Duchas",
+        description: "Tiempo libre, duchas y regreso al hotel antes del gran cierre.",
       },
       {
-        start: "19:00",
+        start: "19:30",
         title: "Ceremonia de cierre",
         description: "Entrega de medallas y reconocimientos especiales.",
       },
