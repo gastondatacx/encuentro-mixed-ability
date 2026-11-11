@@ -59,3 +59,4 @@ export function normalize(text: string) {
     .toLowerCase()
     .trim()
 }
+

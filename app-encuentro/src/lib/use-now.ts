@@ -17,3 +17,4 @@ export function useNow(intervalMs = 1000) {
 
   return now
 }
+

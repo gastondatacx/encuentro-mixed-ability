@@ -87,3 +87,4 @@ export function Mosaic({ cols = 10, rows = 8, seed = 9, fade = "left", className
     </svg>
   )
 }
+
