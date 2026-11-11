@@ -196,8 +196,7 @@ export const schedule: ScheduleDay[] = [
       {
         start: "20:30",
         title: "¡La Gran Fiesta Mixed Ability!",
-        description:
-          "Cena formal de cierre (sándwich de carne y verduras desmenuzado), banda en vivo, DJ y baile.",
+        description: "Cena formal de cierre, banda en vivo, DJ y baile.",
         highlight: true,
       },
     ],
