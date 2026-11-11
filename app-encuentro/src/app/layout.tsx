@@ -22,7 +22,13 @@ const description = `App oficial del ${EVENT.edition} ${EVENT.name}: cronograma,
 export const metadata: Metadata = {
   title,
   description,
-  icons: { icon: "/logo.png", apple: "/logo.png" },
+  icons: {
+    icon: [
+      { url: "/favicon.png", sizes: "64x64", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
   openGraph: {
     title,
     description,

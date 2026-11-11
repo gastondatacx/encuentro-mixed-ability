@@ -60,13 +60,13 @@ export function SiteNav() {
       >
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
           <a href="#inicio" className="flex items-center gap-2.5" aria-label="Ir al inicio">
-            <span className="relative h-9 w-[58px] overflow-hidden rounded-md bg-white ring-1 ring-ink/10">
-              <Image src="/logo.png" alt="" fill sizes="58px" loading="eager" className="object-contain" />
+            <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white ring-1 ring-ink/10">
+              <Image src="/icon-192.png" alt="" fill sizes="40px" loading="eager" className="object-contain p-0.5" />
             </span>
             <span className="font-display text-lg font-bold uppercase leading-none tracking-wide text-ink">
-              Encuentro MA
-              <span className="block text-xs font-semibold tracking-[0.2em] text-brand">
-                Córdoba 2026
+              9º Encuentro 2026
+              <span className="block text-xs font-semibold tracking-[0.18em] text-brand">
+                Mixed Ability · Córdoba
               </span>
             </span>
           </a>

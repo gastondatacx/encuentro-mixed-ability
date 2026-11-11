@@ -34,7 +34,7 @@ export interface ScheduleDay {
 export const EVENT = {
   edition: "9º",
   name: "Encuentro Nacional Mixed Ability",
-  shortName: "Encuentro MA",
+  shortName: "9º Encuentro 2026",
   city: "Córdoba",
   year: 2026,
   sports: ["Rugby", "Hockey", "Básquet"],
