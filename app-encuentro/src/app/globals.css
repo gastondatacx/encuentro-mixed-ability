@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/* Paleta tomada del logo oficial: azul institucional + mosaico de colores. */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-barlow), "Arial Narrow", ui-sans-serif, sans-serif;
+}
+
+@theme {
+  --color-ink: #0b1640;
+  --color-brand: #1d3fb8;
+  --color-brand-dark: #142c86;
+  --color-sky: #19a7e0;
+  --color-lime: #6fb83a;
+  --color-tangerine: #f28c1c;
+  --color-berry: #e5306f;
+  --color-grape: #8e3a96;
+  --color-paper: #f4f6fb;
+
+  --animate-rise: rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+  }
+
+  ::selection {
+    @apply bg-brand text-white;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
