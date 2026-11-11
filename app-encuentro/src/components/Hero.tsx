@@ -82,7 +82,8 @@ export function Hero() {
                 src="/logo.png"
                 alt={`Logo ${EVENT.edition} ${EVENT.name} ${EVENT.city} ${EVENT.year}`}
                 fill
-                priority
+                preload
+                loading="eager"
                 sizes="(max-width: 1024px) 90vw, 480px"
                 className="object-contain"
               />

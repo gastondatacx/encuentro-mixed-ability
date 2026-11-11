@@ -98,7 +98,7 @@ export function InstallPrompt() {
     >
       <div className="flex items-start gap-3">
         <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-white ring-1 ring-ink/10">
-          <Image src="/logo.png" alt="" fill sizes="48px" className="object-contain" />
+          <Image src="/logo.png" alt="" fill sizes="48px" loading="eager" className="object-contain" />
         </span>
         <div className="min-w-0 flex-1">
           <p className="font-display text-lg font-bold uppercase leading-tight text-ink">
