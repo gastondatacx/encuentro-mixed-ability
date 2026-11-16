@@ -42,7 +42,7 @@ export const EVENT = {
   /** Comienzo y fin del evento con zona horaria de Argentina (UTC-3). */
   startsAt: "2026-11-21T17:30:00-03:00",
   endsAt: "2026-11-22T23:59:00-03:00",
-  participants: "+650",
+  participants: "+1200",
   timezoneOffset: "-03:00",
 } as const
 
@@ -102,7 +102,6 @@ export const teams: Team[] = [
   { name: "SANTA MÓNICA HOCKEY", logo: "/logos/santa-monica-hockey.png", initials: "SMH" },
   { name: "SOMOS ABEJAS MIX", logo: "/logos/somos-abejas-mix.png", initials: "SAM" },
   { name: "SUYAI", logo: "/logos/suyai.png", initials: "SU" },
-  { name: "TOROS XS", logo: "/logos/toros-xs.png", initials: "TXS" },
   { name: "TOROS XV", logo: "/logos/toros-xv.png", initials: "TXV" },
   { name: "TÓTEM XV", logo: "/logos/totem-xv.png", initials: "TXV" },
   { name: "UBUNTU", logo: "/logos/ubuntu.png", initials: "UB" },
@@ -146,7 +145,7 @@ export const schedule: ScheduleDay[] = [
         start: "20:00",
         end: "22:00",
         title: "“Brunch” / Ágape de bienvenida",
-        description: "Cena temprana informal estilo tapeo/pizzas (con opciones TACC/vegetarianas).",
+        description: "Cena temprana informal estilo tapeo (con opciones TACC/vegetarianas).",
       },
     ],
   },
@@ -223,6 +222,6 @@ export const logistics = [
   {
     id: "audio",
     title: "Audio oficial",
-    description: "Sistema centralizado de sonido y parlantes con locutor oficial.",
+    description: "Sistema centralizado de sonido y parlantes regulador de decibeles con locutores mix.",
   },
 ] as const

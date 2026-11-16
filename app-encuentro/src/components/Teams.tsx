@@ -13,7 +13,7 @@ function TeamCard({ team, index }: { team: Team; index: number }) {
 
   return (
     <li className="group flex flex-col items-center gap-3 rounded-2xl bg-white p-4 text-center ring-1 ring-ink/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(11,22,64,0.45)] hover:ring-brand/40 sm:p-5">
-      <div className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-paper ring-4 ring-paper transition-transform duration-300 group-hover:scale-105 sm:h-24 sm:w-24">
+      <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl bg-paper ring-4 ring-paper transition-transform duration-300 group-hover:scale-105 sm:h-28 sm:w-28">
         {!failed ? (
           // Se usa <img> para poder detectar logos faltantes y mostrar las siglas.
           // eslint-disable-next-line @next/next/no-img-element
@@ -23,7 +23,7 @@ function TeamCard({ team, index }: { team: Team; index: number }) {
             loading="lazy"
             decoding="async"
             onError={() => setFailed(true)}
-            className="h-full w-full object-contain p-1.5"
+            className="h-full w-full object-contain p-1"
           />
         ) : (
           <span
