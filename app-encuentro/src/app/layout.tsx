@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { Barlow_Condensed, Inter } from "next/font/google"
 import { EVENT } from "@/data/encuentro"
+import { OfflineManager } from "@/components/OfflineManager"
 import "./globals.css"
 
 const barlow = Barlow_Condensed({
@@ -52,7 +53,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es-AR" className={`${barlow.variable} ${inter.variable}`}>
-      <body className="min-h-screen">{children}</body>
+      <body className="min-h-screen">
+        {children}
+        <OfflineManager />
+      </body>
     </html>
   )
 }

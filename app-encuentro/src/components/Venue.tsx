@@ -1,6 +1,10 @@
-import { Ambulance, Car, Clock, Droplets, MapPin, Mic, Navigation, Ticket } from "lucide-react"
+"use client"
+
+import { useState } from "react"
+import { Ambulance, Car, Check, Clock, Copy, Droplets, MapPin, Mic, Navigation, Ticket, WifiOff } from "lucide-react"
 import { VENUE, logistics } from "@/data/encuentro"
 import { SectionHeading } from "@/components/SectionHeading"
+import { useOnline } from "@/lib/use-online"
 
 const LOGISTICS_ICONS = {
   hidratacion: { icon: Droplets, color: "bg-sky" },
@@ -10,6 +14,20 @@ const LOGISTICS_ICONS = {
 } as const
 
 export function Venue() {
+  const isOnline = useOnline()
+  const [copied, setCopied] = useState(false)
+
+  const copyAddress = async () => {
+    const fullAddress = `${VENUE.name}, ${VENUE.address}, ${VENUE.neighborhood}`
+    try {
+      await navigator.clipboard.writeText(fullAddress)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 2500)
+    } catch {
+      // Sin acceso al portapapeles en contextos restringidos.
+    }
+  }
+
   return (
     <section id="sede" className="scroll-mt-16 bg-white py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-5">
@@ -63,14 +81,54 @@ export function Venue() {
           </div>
 
           <div className="min-h-[340px] overflow-hidden rounded-3xl ring-1 ring-ink/10">
-            <iframe
-              title={`Mapa de ${VENUE.name}`}
-              src={VENUE.mapEmbedUrl}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              allowFullScreen
-              className="h-full min-h-[340px] w-full border-0"
-            />
+            {isOnline ? (
+              <iframe
+                title={`Mapa de ${VENUE.name}`}
+                src={VENUE.mapEmbedUrl}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+                className="h-full min-h-[340px] w-full border-0"
+              />
+            ) : (
+              <div className="flex h-full min-h-[340px] flex-col justify-between gap-6 bg-paper p-6 sm:p-8">
+                <div className="flex flex-col gap-3">
+                  <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-bold uppercase tracking-wider text-ink/70 ring-1 ring-ink/10">
+                    <WifiOff className="h-3.5 w-3.5 text-brand" />
+                    Mapa guardado en modo sin conexión
+                  </span>
+                  <h3 className="font-display text-3xl font-extrabold uppercase text-ink">
+                    {VENUE.name}
+                  </h3>
+                  <p className="text-base font-medium text-ink/80">
+                    {VENUE.address} · {VENUE.neighborhood}
+                  </p>
+                  <p className="max-w-md text-sm leading-relaxed text-ink/65">
+                    Sin conexión no se puede cargar el mapa web interactivo. Podés copiar la dirección para pegarla en tu app de mapas offline o abrirla directamente en el GPS del teléfono.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={copyAddress}
+                    className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-bold text-white transition hover:bg-brand"
+                  >
+                    {copied ? <Check className="h-4 w-4 text-lime" /> : <Copy className="h-4 w-4" />}
+                    {copied ? "¡Dirección copiada!" : "Copiar dirección"}
+                  </button>
+                  <a
+                    href={VENUE.directionsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-ink ring-1 ring-ink/15 transition hover:ring-ink"
+                  >
+                    <Navigation className="h-4 w-4 text-brand" />
+                    Abrir en app de mapas
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

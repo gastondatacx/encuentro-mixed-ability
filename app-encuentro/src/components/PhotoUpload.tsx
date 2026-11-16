@@ -4,15 +4,18 @@ import { useCallback, useEffect, useRef, useState, type DragEvent, type FormEven
 import {
   AlertCircle,
   CheckCircle2,
+  Clock,
   ExternalLink,
   Film,
   ImagePlus,
   Loader2,
   Upload,
+  WifiOff,
   X,
 } from "lucide-react"
 import { DRIVE_FOLDER_URL, GOOGLE_SCRIPT_URL } from "@/data/encuentro"
 import { SectionHeading } from "@/components/SectionHeading"
+import { useOnline } from "@/lib/use-online"
 import { cn, formatBytes } from "@/lib/utils"
 
 type FileState = "pending" | "uploading" | "done" | "error"
@@ -22,7 +25,86 @@ interface QueuedFile {
   file: File
   preview: string | null
   state: FileState
+  uploader?: string
+  autoUpload?: boolean
   error?: string
+}
+
+interface StoredQueueRecord {
+  id: string
+  file: File
+  uploader: string
+  autoUpload: boolean
+  createdAt: number
+}
+
+const DB_NAME = "encuentro-uploads-db"
+const STORE_NAME = "queue"
+
+function openQueueDb(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    if (typeof window === "undefined" || !("indexedDB" in window)) {
+      reject(new Error("IndexedDB no disponible"))
+      return
+    }
+    const req = window.indexedDB.open(DB_NAME, 1)
+    req.onupgradeneeded = () => {
+      const db = req.result
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: "id" })
+      }
+    }
+    req.onsuccess = () => resolve(req.result)
+    req.onerror = () => reject(req.error)
+  })
+}
+
+async function readStoredQueue(): Promise<StoredQueueRecord[]> {
+  try {
+    const db = await openQueueDb()
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, "readonly")
+      const req = tx.objectStore(STORE_NAME).getAll()
+      req.onsuccess = () => {
+        const records = (req.result as StoredQueueRecord[]) || []
+        records.sort((a, b) => a.createdAt - b.createdAt)
+        resolve(records)
+      }
+      req.onerror = () => reject(req.error)
+    })
+  } catch {
+    return []
+  }
+}
+
+async function saveStoredRecords(records: StoredQueueRecord[]) {
+  if (!records.length) return
+  try {
+    const db = await openQueueDb()
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, "readwrite")
+      const store = tx.objectStore(STORE_NAME)
+      records.forEach((rec) => store.put(rec))
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+    })
+  } catch {
+    // Modo privado o cuota llena: la cola en memoria sigue funcionando.
+  }
+}
+
+async function deleteStoredRecord(id: string) {
+  try {
+    const db = await openQueueDb()
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, "readwrite")
+      tx.objectStore(STORE_NAME).delete(id)
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+    })
+  } catch {
+    // Ignorar si IndexedDB no está disponible.
+  }
 }
 
 function fileToBase64(file: File): Promise<string> {
@@ -61,13 +143,16 @@ async function uploadToDrive(file: File, uploader: string) {
 }
 
 export function PhotoUpload() {
+  const isOnline = useOnline()
   const [name, setName] = useState("")
   const [queue, setQueue] = useState<QueuedFile[]>([])
   const [dragging, setDragging] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [offlineQueuedNotice, setOfflineQueuedNotice] = useState<number | null>(null)
   const [summary, setSummary] = useState<{ ok: number; failed: number } | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const queueRef = useRef(queue)
+  const busyRef = useRef(false)
   queueRef.current = queue
 
   // Libera las vistas previas al desmontar.
@@ -75,24 +160,65 @@ export function PhotoUpload() {
     return () => queueRef.current.forEach((q) => q.preview && URL.revokeObjectURL(q.preview))
   }, [])
 
-  const addFiles = useCallback((files: FileList | File[]) => {
-    const valid = Array.from(files).filter(
-      (f) => f.type.startsWith("image/") || f.type.startsWith("video/")
-    )
-    if (!valid.length) return
-    setSummary(null)
-    setQueue((prev) => [
-      ...prev,
-      ...valid.map((file) => ({
+  // Restaura archivos pendientes guardados en IndexedDB al abrir la app.
+  useEffect(() => {
+    let active = true
+    readStoredQueue().then((records) => {
+      if (!active || !records.length) return
+      const restored: QueuedFile[] = records.map((rec) => ({
+        id: rec.id,
+        file: rec.file,
+        preview: rec.file.type.startsWith("image/") ? URL.createObjectURL(rec.file) : null,
+        state: "pending",
+        uploader: rec.uploader,
+        autoUpload: rec.autoUpload,
+      }))
+      setQueue(restored)
+      const firstUploader = records.find((r) => r.uploader)?.uploader
+      if (firstUploader) setName((prev) => prev || firstUploader)
+      const autoCount = records.filter((r) => r.autoUpload).length
+      if (autoCount > 0 && !window.navigator.onLine) {
+        setOfflineQueuedNotice(autoCount)
+      }
+    })
+    return () => {
+      active = false
+    }
+  }, [])
+
+  const addFiles = useCallback(
+    (files: FileList | File[]) => {
+      const valid = Array.from(files).filter(
+        (f) => f.type.startsWith("image/") || f.type.startsWith("video/")
+      )
+      if (!valid.length) return
+      setSummary(null)
+      setOfflineQueuedNotice(null)
+      const now = Date.now()
+      const nextItems: QueuedFile[] = valid.map((file, idx) => ({
         id: `${file.name}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2, 7)}`,
         file,
         preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : null,
         state: "pending" as const,
-      })),
-    ])
-  }, [])
+        uploader: name.trim(),
+        autoUpload: false,
+      }))
+      setQueue((prev) => [...prev, ...nextItems])
+      saveStoredRecords(
+        nextItems.map((item, idx) => ({
+          id: item.id,
+          file: item.file,
+          uploader: name.trim(),
+          autoUpload: false,
+          createdAt: now + idx,
+        }))
+      )
+    },
+    [name]
+  )
 
   const removeFile = (id: string) => {
+    deleteStoredRecord(id)
     setQueue((prev) => {
       const item = prev.find((q) => q.id === id)
       if (item?.preview) URL.revokeObjectURL(item.preview)
@@ -106,38 +232,100 @@ export function PhotoUpload() {
     if (!busy) addFiles(e.dataTransfer.files)
   }
 
+  const processUpload = useCallback(
+    async (itemsToUpload: QueuedFile[]) => {
+      if (!itemsToUpload.length || busyRef.current) return
+
+      const uploader = name.trim()
+      if (!window.navigator.onLine) {
+        const ids = new Set(itemsToUpload.map((it) => it.id))
+        setQueue((prev) =>
+          prev.map((q) => (ids.has(q.id) ? { ...q, autoUpload: true, uploader: uploader || q.uploader } : q))
+        )
+        await saveStoredRecords(
+          itemsToUpload.map((it, idx) => ({
+            id: it.id,
+            file: it.file,
+            uploader: uploader || it.uploader || "",
+            autoUpload: true,
+            createdAt: Date.now() + idx,
+          }))
+        )
+        setSummary(null)
+        setOfflineQueuedNotice(itemsToUpload.length)
+        return
+      }
+
+      busyRef.current = true
+      setBusy(true)
+      setSummary(null)
+      setOfflineQueuedNotice(null)
+      let ok = 0
+      let failed = 0
+
+      for (const item of itemsToUpload) {
+        setQueue((prev) =>
+          prev.map((q) => (q.id === item.id ? { ...q, state: "uploading", error: undefined } : q))
+        )
+        try {
+          await uploadToDrive(item.file, uploader || item.uploader || "")
+          ok++
+          await deleteStoredRecord(item.id)
+          setQueue((prev) => prev.map((q) => (q.id === item.id ? { ...q, state: "done" } : q)))
+        } catch (err) {
+          if (!window.navigator.onLine) {
+            await saveStoredRecords([
+              {
+                id: item.id,
+                file: item.file,
+                uploader: uploader || item.uploader || "",
+                autoUpload: true,
+                createdAt: Date.now(),
+              },
+            ])
+            setQueue((prev) =>
+              prev.map((q) => (q.id === item.id ? { ...q, state: "pending", autoUpload: true } : q))
+            )
+            setOfflineQueuedNotice((c) => (c ?? 0) + 1)
+          } else {
+            failed++
+            const message = err instanceof Error ? err.message : "Error desconocido"
+            setQueue((prev) =>
+              prev.map((q) =>
+                q.id === item.id ? { ...q, state: "error", autoUpload: false, error: message } : q
+              )
+            )
+          }
+        }
+      }
+
+      // Quitamos de la lista los que ya subieron bien; quedan solo los fallidos o pendientes offline.
+      setQueue((prev) => {
+        prev.filter((q) => q.state === "done").forEach((q) => q.preview && URL.revokeObjectURL(q.preview))
+        return prev.filter((q) => q.state !== "done")
+      })
+      if (ok > 0 || failed > 0) setSummary({ ok, failed })
+      busyRef.current = false
+      setBusy(false)
+    },
+    [name]
+  )
+
+  // Al volver la conexión, sube automáticamente los archivos en cola marcados para envío.
+  useEffect(() => {
+    if (!isOnline || busyRef.current) return
+    const pendingAuto = queue.filter(
+      (q) => q.autoUpload && (q.state === "pending" || q.state === "error")
+    )
+    if (pendingAuto.length > 0) {
+      processUpload(pendingAuto)
+    }
+  }, [isOnline, queue, processUpload])
+
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
     const pending = queue.filter((q) => q.state === "pending" || q.state === "error")
-    if (!pending.length || busy) return
-
-    setBusy(true)
-    setSummary(null)
-    let ok = 0
-    let failed = 0
-
-    for (const item of pending) {
-      setQueue((prev) => prev.map((q) => (q.id === item.id ? { ...q, state: "uploading", error: undefined } : q)))
-      try {
-        await uploadToDrive(item.file, name.trim())
-        ok++
-        setQueue((prev) => prev.map((q) => (q.id === item.id ? { ...q, state: "done" } : q)))
-      } catch (err) {
-        failed++
-        const message = err instanceof Error ? err.message : "Error desconocido"
-        setQueue((prev) =>
-          prev.map((q) => (q.id === item.id ? { ...q, state: "error", error: message } : q))
-        )
-      }
-    }
-
-    // Quitamos de la lista los que ya subieron bien; quedan solo los fallidos para reintentar.
-    setQueue((prev) => {
-      prev.filter((q) => q.state === "done").forEach((q) => q.preview && URL.revokeObjectURL(q.preview))
-      return prev.filter((q) => q.state !== "done")
-    })
-    setSummary({ ok, failed })
-    setBusy(false)
+    await processUpload(pending)
   }
 
   const pendingCount = queue.filter((q) => q.state !== "done").length
@@ -265,6 +453,14 @@ export function PhotoUpload() {
                       <AlertCircle className="h-4 w-4" />
                     </span>
                   )}
+                  {q.state === "pending" && q.autoUpload && (
+                    <span
+                      title="En espera de conexión"
+                      className="absolute left-1.5 top-1.5 rounded-full bg-brand p-1 text-white shadow"
+                    >
+                      <Clock className="h-3.5 w-3.5" />
+                    </span>
+                  )}
                   {!busy && (
                     <button
                       type="button"
@@ -290,6 +486,24 @@ export function PhotoUpload() {
               </div>
               <p className="text-center text-sm text-ink/65">
                 Subiendo {Math.min(doneCount + 1, total)} de {total}… No cierres la página.
+              </p>
+            </div>
+          )}
+
+          {(!isOnline || offlineQueuedNotice) && (
+            <div
+              role="status"
+              className="flex items-start gap-3 rounded-xl bg-brand/10 p-4 text-sm text-ink"
+            >
+              <WifiOff className="h-5 w-5 shrink-0 text-brand" />
+              <p>
+                {offlineQueuedNotice
+                  ? `Sin conexión: ${
+                      offlineQueuedNotice === 1
+                        ? "1 archivo quedó guardado"
+                        : `${offlineQueuedNotice} archivos quedaron guardados`
+                    } en tu teléfono y se subirán automáticamente en cuanto vuelva internet.`
+                  : "Estás sin conexión: podés elegir tus fotos o videos ahora y guardarlos en cola para que se suban automáticamente cuando vuelva internet."}
               </p>
             </div>
           )}
@@ -325,7 +539,9 @@ export function PhotoUpload() {
             {busy
               ? "Subiendo…"
               : pendingCount > 0
-                ? `Subir ${pendingCount} ${pendingCount === 1 ? "archivo" : "archivos"}`
+                ? isOnline
+                  ? `Subir ${pendingCount} ${pendingCount === 1 ? "archivo" : "archivos"}`
+                  : `Guardar ${pendingCount} ${pendingCount === 1 ? "archivo" : "archivos"} para subir con red`
                 : "Subir archivos"}
           </button>
         </form>
