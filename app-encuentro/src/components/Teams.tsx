@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Search, X } from "lucide-react"
 import { EVENT, teams, type Team } from "@/data/encuentro"
 import { SectionHeading } from "@/components/SectionHeading"
@@ -8,11 +8,19 @@ import { cn, normalize } from "@/lib/utils"
 
 const FALLBACK_BG = ["bg-brand", "bg-sky", "bg-lime", "bg-tangerine", "bg-berry", "bg-grape"]
 
-function TeamCard({ team, index }: { team: Team; index: number }) {
+function TeamCard({
+  team,
+  index,
+  onSelect,
+}: {
+  team: Team
+  index: number
+  onSelect?: () => void
+}) {
   const [failed, setFailed] = useState(false)
 
-  return (
-    <li className="group flex flex-col items-center gap-3 rounded-2xl bg-white p-4 text-center ring-1 ring-ink/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(11,22,64,0.45)] hover:ring-brand/40 sm:p-5">
+  const content = (
+    <>
       <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl bg-paper ring-4 ring-paper transition-transform duration-300 group-hover:scale-105 sm:h-28 sm:w-28">
         {!failed ? (
           // Se usa <img> para poder detectar logos faltantes y mostrar las siglas.
@@ -40,12 +48,51 @@ function TeamCard({ team, index }: { team: Team; index: number }) {
       <h3 className="font-display text-base font-bold uppercase leading-tight text-ink sm:text-lg">
         {team.name}
       </h3>
+      {team.ficha && (
+        <span className="mt-auto text-xs font-semibold text-brand opacity-80 transition-opacity group-hover:opacity-100">
+          Ver info
+        </span>
+      )}
+    </>
+  )
+
+  return (
+    <li className="flex">
+      {team.ficha && onSelect ? (
+        <button
+          type="button"
+          onClick={onSelect}
+          aria-label={`Ver información de ${team.name}`}
+          className="group flex w-full cursor-pointer flex-col items-center gap-3 rounded-2xl bg-white p-4 text-center ring-1 ring-ink/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(11,22,64,0.45)] hover:ring-brand/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:p-5"
+        >
+          {content}
+        </button>
+      ) : (
+        <div className="group flex w-full flex-col items-center gap-3 rounded-2xl bg-white p-4 text-center ring-1 ring-ink/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(11,22,64,0.45)] hover:ring-brand/40 sm:p-5">
+          {content}
+        </div>
+      )}
     </li>
   )
 }
 
 export function Teams() {
   const [query, setQuery] = useState("")
+  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
+
+  useEffect(() => {
+    if (!selectedTeam) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedTeam(null)
+    }
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    window.addEventListener("keydown", onKeyDown)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      window.removeEventListener("keydown", onKeyDown)
+    }
+  }, [selectedTeam])
 
   const filtered = useMemo(() => {
     const q = normalize(query)
@@ -93,7 +140,12 @@ export function Teams() {
         {filtered.length > 0 ? (
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
             {filtered.map((team) => (
-              <TeamCard key={team.name} team={team} index={teams.indexOf(team)} />
+              <TeamCard
+                key={team.name}
+                team={team}
+                index={teams.indexOf(team)}
+                onSelect={team.ficha ? () => setSelectedTeam(team) : undefined}
+              />
             ))}
           </ul>
         ) : (
@@ -111,6 +163,36 @@ export function Teams() {
           </div>
         )}
       </div>
+
+      {selectedTeam?.ficha && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Información de ${selectedTeam.name}`}
+          onClick={() => setSelectedTeam(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/80 p-3 backdrop-blur-sm sm:p-6"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-2xl ring-1 ring-white/20"
+          >
+            <button
+              type="button"
+              onClick={() => setSelectedTeam(null)}
+              aria-label="Cerrar información del equipo"
+              className="sticky top-3 float-right z-10 mr-3 mt-3 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-ink/85 text-white shadow-lg ring-1 ring-white/25 transition hover:bg-ink"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={selectedTeam.ficha}
+              alt={`Información de ${selectedTeam.name}`}
+              className="-mt-13 block h-auto w-full"
+            />
+          </div>
+        </div>
+      )}
     </section>
   )
 }
