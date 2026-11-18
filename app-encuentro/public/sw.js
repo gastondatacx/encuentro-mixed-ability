@@ -1,4 +1,4 @@
-const CACHE_NAME = "encuentro-pwa-v1"
+const CACHE_NAME = "encuentro-pwa-v2"
 
 const SHELL_ASSETS = [
   "/",

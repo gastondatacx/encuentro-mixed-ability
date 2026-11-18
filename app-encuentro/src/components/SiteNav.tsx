@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import { CalendarDays, Camera, Home, MapPin, Users } from "lucide-react"
+import { ShareButton } from "@/components/ShareButton"
 import { cn } from "@/lib/utils"
 
 const LINKS = [
@@ -71,34 +72,38 @@ export function SiteNav() {
             </span>
           </a>
 
-          <nav aria-label="Secciones" className="hidden md:block">
-            <ul className="flex items-center gap-1">
-              {LINKS.map((link) => (
-                <li key={link.id}>
+          <div className="flex items-center gap-2">
+            <nav aria-label="Secciones" className="hidden md:block">
+              <ul className="flex items-center gap-1">
+                {LINKS.map((link) => (
+                  <li key={link.id}>
+                    <a
+                      href={`#${link.id}`}
+                      aria-current={active === link.id ? "true" : undefined}
+                      className={cn(
+                        "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
+                        active === link.id
+                          ? "bg-brand text-white"
+                          : "text-ink/70 hover:bg-ink/5 hover:text-ink"
+                      )}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+                <li>
                   <a
-                    href={`#${link.id}`}
-                    aria-current={active === link.id ? "true" : undefined}
-                    className={cn(
-                      "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
-                      active === link.id
-                        ? "bg-brand text-white"
-                        : "text-ink/70 hover:bg-ink/5 hover:text-ink"
-                    )}
+                    href="#contacto"
+                    className="ml-2 rounded-full border-2 border-ink px-4 py-1.5 text-sm font-bold text-ink transition-colors hover:bg-ink hover:text-white"
                   >
-                    {link.label}
+                    Contacto
                   </a>
                 </li>
-              ))}
-              <li>
-                <a
-                  href="#contacto"
-                  className="ml-2 rounded-full border-2 border-ink px-4 py-1.5 text-sm font-bold text-ink transition-colors hover:bg-ink hover:text-white"
-                >
-                  Contacto
-                </a>
-              </li>
-            </ul>
-          </nav>
+              </ul>
+            </nav>
+
+            <ShareButton className="rounded-full bg-brand/10 px-3.5 py-2 text-xs font-bold text-brand ring-1 ring-brand/20 hover:bg-brand hover:text-white sm:text-sm" />
+          </div>
         </div>
       </header>
 

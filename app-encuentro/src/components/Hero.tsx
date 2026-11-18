@@ -3,6 +3,7 @@ import { ArrowRight, Camera, CalendarDays } from "lucide-react"
 import { EVENT, VENUE, teams } from "@/data/encuentro"
 import { Countdown } from "@/components/Countdown"
 import { Mosaic } from "@/components/Mosaic"
+import { ShareButton } from "@/components/ShareButton"
 
 const SPORT_COLORS = ["bg-lime", "bg-tangerine", "bg-sky"]
 
@@ -72,6 +73,10 @@ export function Hero() {
               <Camera className="h-5 w-5" />
               Subir fotos
             </a>
+            <ShareButton
+              label="Compartir app"
+              className="rounded-full bg-white px-6 py-3.5 font-bold text-ink ring-2 ring-ink/15 hover:ring-ink [&>svg]:h-5 [&>svg]:w-5"
+            />
           </div>
         </div>
 
