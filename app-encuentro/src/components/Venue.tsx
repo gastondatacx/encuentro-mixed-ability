@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Ambulance, Car, Check, Clock, Copy, Droplets, MapPin, Mic, Navigation, Ticket, WifiOff } from "lucide-react"
 import { VENUE, logistics } from "@/data/encuentro"
 import { SectionHeading } from "@/components/SectionHeading"
+import { FieldMap } from "@/components/FieldMap"
 import { useOnline } from "@/lib/use-online"
 
 const LOGISTICS_ICONS = {
@@ -131,6 +132,9 @@ export function Venue() {
             )}
           </div>
         </div>
+
+        {/* Croquis del predio */}
+        <FieldMap />
 
         {/* Logística */}
         <div className="mt-16">
