@@ -1,4 +1,4 @@
-const CACHE_NAME = "encuentro-pwa-v2"
+const CACHE_NAME = "encuentro-pwa-v3"
 
 const SHELL_ASSETS = [
   "/",
@@ -42,6 +42,7 @@ const TEAM_LOGOS = [
   "/logos/santa-monica-hockey.png",
   "/logos/somos-abejas-mix.png",
   "/logos/suyai.png",
+  "/logos/toritos-xv.png",
   "/logos/toros-xv.png",
   "/logos/totem-xv.png",
   "/logos/ubuntu.png",

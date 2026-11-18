@@ -103,6 +103,7 @@ export const teams: Team[] = [
   { name: "SANTA MÓNICA HOCKEY", logo: "/logos/santa-monica-hockey.png", initials: "SMH", ficha: "/fichas/santa-monica-hockey.jpg" },
   { name: "SOMOS ABEJAS MIX", logo: "/logos/somos-abejas-mix.png", initials: "SAM", ficha: "/fichas/somos-abejas-mix.jpg" },
   { name: "SUYAI", logo: "/logos/suyai.png", initials: "SU", ficha: "/fichas/suyai.jpg" },
+  { name: "TORITOS XV", logo: "/logos/toritos-xv.png", initials: "TXV" },
   { name: "TOROS XV", logo: "/logos/toros-xv.png", initials: "TXV" },
   { name: "TÓTEM XV", logo: "/logos/totem-xv.png", initials: "TXV", ficha: "/fichas/totem-xv.jpg" },
   { name: "UBUNTU", logo: "/logos/ubuntu.png", initials: "UB", ficha: "/fichas/ubuntu.jpg" },
