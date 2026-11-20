@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import { Barlow_Condensed, Inter } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
 import { EVENT } from "@/data/encuentro"
 import { OfflineManager } from "@/components/OfflineManager"
 import "./globals.css"
@@ -56,6 +57,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="min-h-screen">
         {children}
         <OfflineManager />
+        <Analytics />
       </body>
     </html>
   )
