@@ -1,4 +1,4 @@
-const CACHE_NAME = "encuentro-pwa-v7"
+const CACHE_NAME = "encuentro-pwa-v8"
 
 const SHELL_ASSETS = [
   "/",
@@ -157,6 +157,7 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url)
   if (url.origin !== self.location.origin) return
+  if (url.pathname.startsWith("/api/")) return
 
   // Navegación principal: Network-First con fallback a la copia cacheada de "/"
   if (request.mode === "navigate" || request.destination === "document") {

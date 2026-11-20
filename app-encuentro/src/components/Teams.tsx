@@ -1,9 +1,10 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Search, X } from "lucide-react"
 import { EVENT, teams, type Team } from "@/data/encuentro"
 import { SectionHeading } from "@/components/SectionHeading"
+import { trackEvent } from "@/lib/analytics"
 import { cn, normalize } from "@/lib/utils"
 
 const FALLBACK_BG = ["bg-brand", "bg-sky", "bg-lime", "bg-tangerine", "bg-berry", "bg-grape"]
@@ -79,6 +80,22 @@ function TeamCard({
 export function Teams() {
   const [query, setQuery] = useState("")
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
+  const lastTrackedQuery = useRef("")
+
+  const handleSelectTeam = (team: Team) => {
+    setSelectedTeam(team)
+    trackEvent("team_ficha_open", { team: team.name })
+  }
+
+  useEffect(() => {
+    const q = normalize(query)
+    if (q.length < 3 || q === lastTrackedQuery.current) return
+    const t = window.setTimeout(() => {
+      lastTrackedQuery.current = q
+      trackEvent("team_search", { query: q })
+    }, 900)
+    return () => window.clearTimeout(t)
+  }, [query])
 
   useEffect(() => {
     if (!selectedTeam) return
@@ -144,7 +161,7 @@ export function Teams() {
                 key={team.name}
                 team={team}
                 index={teams.indexOf(team)}
-                onSelect={team.ficha ? () => setSelectedTeam(team) : undefined}
+                onSelect={team.ficha ? () => handleSelectTeam(team) : undefined}
               />
             ))}
           </ul>

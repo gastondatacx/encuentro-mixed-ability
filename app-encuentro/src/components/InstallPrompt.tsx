@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import { Download, Share, X } from "lucide-react"
+import { trackEvent } from "@/lib/analytics"
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -41,6 +42,20 @@ export function InstallPrompt() {
   const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [isIOS, setIsIOS] = useState(false)
   const [visible, setVisible] = useState(false)
+  const shownLoggedRef = useRef(false)
+  const installedLoggedRef = useRef(false)
+
+  const recordInstalled = () => {
+    if (installedLoggedRef.current) return
+    installedLoggedRef.current = true
+    trackEvent("pwa_installed")
+  }
+
+  useEffect(() => {
+    if (!visible || (!prompt && !isIOS) || shownLoggedRef.current) return
+    shownLoggedRef.current = true
+    trackEvent("pwa_prompt_shown", { platform: isIOS ? "ios" : "android" })
+  }, [visible, prompt, isIOS])
 
   useEffect(() => {
     if (isStandaloneOrDismissed()) return
@@ -61,6 +76,7 @@ export function InstallPrompt() {
     }
     const onInstalled = () => {
       remember()
+      recordInstalled()
       setVisible(false)
       setPrompt(null)
     }
@@ -83,7 +99,10 @@ export function InstallPrompt() {
     if (!prompt) return
     await prompt.prompt()
     const { outcome } = await prompt.userChoice
-    if (outcome === "accepted") remember()
+    if (outcome === "accepted") {
+      remember()
+      recordInstalled()
+    }
     setPrompt(null)
     setVisible(false)
   }

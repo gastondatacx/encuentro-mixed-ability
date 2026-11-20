@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { PartyPopper } from "lucide-react"
 import { schedule } from "@/data/encuentro"
 import { SectionHeading } from "@/components/SectionHeading"
+import { trackEvent } from "@/lib/analytics"
 import { useNow } from "@/lib/use-now"
 import { cn, defaultDayId, statusOf, withTimes, type ItemStatus } from "@/lib/utils"
 
@@ -61,6 +62,7 @@ export function Schedule() {
                 onClick={() => {
                   setTouched(true)
                   setDayId(d.id)
+                  trackEvent("schedule_day", { day: d.id })
                 }}
                 className={cn(
                   "flex flex-col items-start rounded-xl px-4 py-3 text-left transition-all sm:px-5",

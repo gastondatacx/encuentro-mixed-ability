@@ -13,6 +13,7 @@ import {
 } from "lucide-react"
 import { faqs, packingLists, weatherAlert } from "@/data/encuentro"
 import { SectionHeading } from "@/components/SectionHeading"
+import { trackEvent } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
 
 function formatRecommendedItem(item: string) {
@@ -202,7 +203,10 @@ export function OfficialGuide() {
                     type="button"
                     aria-expanded={open}
                     aria-controls={`faq-panel-${idx}`}
-                    onClick={() => setOpenFaq(open ? null : idx)}
+                    onClick={() => {
+                      if (!open) trackEvent("faq_open", { question: faq.question })
+                      setOpenFaq(open ? null : idx)
+                    }}
                     className="flex w-full cursor-pointer items-center justify-between gap-4 p-5 text-left transition hover:bg-paper/50 sm:p-6"
                   >
                     <div className="flex items-center gap-4">

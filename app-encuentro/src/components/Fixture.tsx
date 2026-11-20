@@ -1,9 +1,10 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Calendar, ChevronDown, Clock, MapPin, Search, X } from "lucide-react"
 import { fixtureCategoryA, fixtureCategoryB, fixtureMeta } from "@/data/encuentro"
 import { SectionHeading } from "@/components/SectionHeading"
+import { trackEvent } from "@/lib/analytics"
 import { cn, normalize } from "@/lib/utils"
 
 type CategoryFilter = "all" | "A" | "B"
@@ -26,8 +27,18 @@ export function Fixture() {
   const [court, setCourt] = useState<CourtFilter>("all")
   const [query, setQuery] = useState("")
   const [openIds, setOpenIds] = useState<Set<string>>(() => new Set(["cat-a-manana"]))
+  const lastTrackedQuery = useRef("")
 
   const q = normalize(query)
+
+  useEffect(() => {
+    if (q.length < 3 || q === lastTrackedQuery.current) return
+    const t = window.setTimeout(() => {
+      lastTrackedQuery.current = q
+      trackEvent("fixture_search", { query: q })
+    }, 900)
+    return () => window.clearTimeout(t)
+  }, [q])
   const autoExpand = Boolean(q) || blockFilter !== "all" || court !== "all"
 
   const showCatA = category !== "B" && (court === "all" || court === "1" || court === "4")
@@ -87,6 +98,7 @@ export function Fixture() {
   const isBlockOpen = (id: string) => autoExpand || openIds.has(id)
 
   const toggleBlock = (id: string) => {
+    trackEvent("fixture_block_toggle", { blockId: id })
     setOpenIds((prev) => {
       const next = new Set(prev)
       if (next.has(id)) next.delete(id)
@@ -96,6 +108,7 @@ export function Fixture() {
   }
 
   const toggleAll = () => {
+    trackEvent("fixture_block_toggle", { blockId: allOpen ? "collapse_all" : "expand_all" })
     if (allOpen) {
       setOpenIds(new Set())
     } else {
@@ -105,6 +118,7 @@ export function Fixture() {
 
   const handleCategoryChange = (next: CategoryFilter) => {
     setCategory(next)
+    trackEvent("fixture_filter", { filter: `categoria:${next}` })
     if (next === "A" && court !== "all" && court !== "1" && court !== "4") setCourt("all")
     if (next === "B" && (court === "1" || court === "4")) setCourt("all")
     if (next === "B" && !openIds.has("fecha-1")) {
@@ -174,7 +188,10 @@ export function Fixture() {
               <button
                 key={b.id}
                 type="button"
-                onClick={() => setBlockFilter(b.id)}
+                onClick={() => {
+                  setBlockFilter(b.id)
+                  trackEvent("fixture_filter", { filter: `bloque:${b.id}` })
+                }}
                 className={cn(
                   "cursor-pointer rounded-full px-4 py-2 text-xs font-bold transition sm:text-sm",
                   blockFilter === b.id
@@ -233,7 +250,10 @@ export function Fixture() {
               <button
                 key={p.id}
                 type="button"
-                onClick={() => setCourt(p.id)}
+                onClick={() => {
+                  setCourt(p.id)
+                  trackEvent("fixture_filter", { filter: `cancha:${p.id}` })
+                }}
                 className={cn(
                   "cursor-pointer rounded-full px-3 py-1.5 text-xs font-bold transition",
                   court === p.id

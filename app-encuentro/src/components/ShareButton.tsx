@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Check, Share2 } from "lucide-react"
 import { EVENT } from "@/data/encuentro"
+import { trackEvent } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
 
 interface ShareButtonProps {
@@ -21,6 +22,7 @@ export function ShareButton({ label = "Compartir", className }: ShareButtonProps
     if (typeof navigator.share === "function") {
       try {
         await navigator.share({ title, text, url })
+        trackEvent("share_click", { method: "native" })
         return
       } catch (err) {
         if (err instanceof Error && err.name === "AbortError") return
@@ -29,6 +31,7 @@ export function ShareButton({ label = "Compartir", className }: ShareButtonProps
 
     try {
       await navigator.clipboard.writeText(url)
+      trackEvent("share_click", { method: "clipboard" })
       setCopied(true)
       window.setTimeout(() => setCopied(false), 2500)
     } catch {

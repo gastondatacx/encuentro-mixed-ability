@@ -14,6 +14,7 @@ import {
   Utensils,
   X,
 } from "lucide-react"
+import { trackEvent } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
 
 const LEGEND_ITEMS = [
@@ -30,6 +31,11 @@ const LEGEND_ITEMS = [
 
 export function FieldMap() {
   const [expanded, setExpanded] = useState(false)
+
+  const openExpanded = () => {
+    setExpanded(true)
+    trackEvent("map_expand")
+  }
 
   useEffect(() => {
     if (!expanded) return
@@ -62,7 +68,7 @@ export function FieldMap() {
 
         <button
           type="button"
-          onClick={() => setExpanded(true)}
+          onClick={openExpanded}
           className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-bold text-ink ring-1 ring-ink/15 transition hover:ring-ink"
         >
           <Maximize2 className="h-4 w-4 text-brand" />
@@ -93,7 +99,7 @@ export function FieldMap() {
             src="/mapa-predio.jpg"
             alt="Mapa oficial de Córdoba Rugby Club con ubicación de canchas, ingresos, gazebos, comedor y servicios"
             className="block h-auto w-full cursor-zoom-in"
-            onClick={() => setExpanded(true)}
+            onClick={openExpanded}
           />
         </div>
       </div>

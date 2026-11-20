@@ -72,6 +72,8 @@ export const GOOGLE_SCRIPT_URL =
 export const DRIVE_FOLDER_URL =
   "https://drive.google.com/drive/folders/1OjAiwQ9BVsGZWaRmrKlUh_log31TkHKS"
 
+export const ANALYTICS_PIN = process.env.NEXT_PUBLIC_ANALYTICS_PIN || "2026"
+
 export const teams: Team[] = [
   { name: "ALBATROS MIX", logo: "/logos/albatros-mix.png", initials: "AL", ficha: "/fichas/albatros-mix.jpg" },
   { name: "ARCOIRIS", logo: "/logos/arcoiris.png", initials: "AR", ficha: "/fichas/arcoiris.jpg" },

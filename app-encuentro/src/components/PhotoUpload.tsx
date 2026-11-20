@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 import { DRIVE_FOLDER_URL, GOOGLE_SCRIPT_URL } from "@/data/encuentro"
 import { SectionHeading } from "@/components/SectionHeading"
+import { trackEvent } from "@/lib/analytics"
 import { useOnline } from "@/lib/use-online"
 import { cn, formatBytes } from "@/lib/utils"
 
@@ -253,6 +254,7 @@ export function PhotoUpload() {
         )
         setSummary(null)
         setOfflineQueuedNotice(itemsToUpload.length)
+        trackEvent("photo_upload_offline_queue", { count: itemsToUpload.length })
         return
       }
 
@@ -305,6 +307,7 @@ export function PhotoUpload() {
         return prev.filter((q) => q.state !== "done")
       })
       if (ok > 0 || failed > 0) setSummary({ ok, failed })
+      if (ok > 0) trackEvent("photo_upload_success", { count: ok })
       busyRef.current = false
       setBusy(false)
     },
@@ -346,6 +349,7 @@ export function PhotoUpload() {
             href={DRIVE_FOLDER_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackEvent("photo_drive_open")}
             className="mt-2 inline-flex items-center gap-2 rounded-full bg-paper px-6 py-3.5 font-bold text-ink ring-1 ring-ink/15 transition hover:ring-ink"
           >
             <ExternalLink className="h-5 w-5" />

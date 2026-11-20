@@ -33,6 +33,8 @@ export function Contact() {
               href={CONTACT.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
+              data-track-event="contact_click"
+              data-track-meta='{"channel":"whatsapp"}'
               className="inline-flex items-center justify-center gap-2.5 rounded-full bg-[#25d366] px-6 py-4 font-bold text-ink transition hover:brightness-110"
             >
               <MessageCircle className="h-5 w-5" />
@@ -40,6 +42,8 @@ export function Contact() {
             </a>
             <a
               href={`mailto:${CONTACT.email}`}
+              data-track-event="contact_click"
+              data-track-meta='{"channel":"email"}'
               className="inline-flex items-center justify-center gap-2.5 rounded-full bg-white px-6 py-4 font-bold text-ink transition hover:bg-sky hover:text-white"
             >
               <Mail className="h-5 w-5" />

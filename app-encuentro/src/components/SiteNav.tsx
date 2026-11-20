@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import { BookOpen, CalendarDays, Camera, Home, MapPin, Trophy, Users } from "lucide-react"
 import { ShareButton } from "@/components/ShareButton"
+import { trackEvent } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
 
 const LINKS = [
@@ -82,6 +83,7 @@ export function SiteNav() {
                     <a
                       href={`#${link.id}`}
                       aria-current={active === link.id ? "true" : undefined}
+                      onClick={() => trackEvent("nav_click", { section: link.id })}
                       className={cn(
                         "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
                         active === link.id
@@ -96,6 +98,7 @@ export function SiteNav() {
                 <li>
                   <a
                     href="#contacto"
+                    onClick={() => trackEvent("nav_click", { section: "contacto" })}
                     className="ml-2 rounded-full border-2 border-ink px-4 py-1.5 text-sm font-bold text-ink transition-colors hover:bg-ink hover:text-white"
                   >
                     Contacto
@@ -123,6 +126,7 @@ export function SiteNav() {
                 <a
                   href={`#${id}`}
                   aria-current={isActive ? "true" : undefined}
+                  onClick={() => trackEvent("nav_click", { section: id })}
                   className={cn(
                     "flex flex-col items-center gap-0.5 py-2 text-[10px] font-semibold transition-colors",
                     isActive ? "text-brand" : "text-ink/55"

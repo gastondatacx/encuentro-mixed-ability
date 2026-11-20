@@ -61,6 +61,8 @@ export function Hero() {
           <div className="flex flex-wrap gap-3 pt-1">
             <a
               href="#agenda"
+              data-track-event="nav_click"
+              data-track-meta='{"section":"agenda","source":"hero"}'
               className="group inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3.5 font-bold text-white shadow-lg shadow-brand/30 transition hover:bg-brand-dark"
             >
               Ver cronograma
@@ -68,6 +70,8 @@ export function Hero() {
             </a>
             <a
               href="#fotos"
+              data-track-event="nav_click"
+              data-track-meta='{"section":"fotos","source":"hero"}'
               className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-bold text-ink ring-2 ring-ink/15 transition hover:ring-ink"
             >
               <Camera className="h-5 w-5" />

@@ -5,6 +5,7 @@ import { Ambulance, Car, Check, Clock, Copy, Droplets, MapPin, Mic, Navigation, 
 import { VENUE, logistics } from "@/data/encuentro"
 import { SectionHeading } from "@/components/SectionHeading"
 import { FieldMap } from "@/components/FieldMap"
+import { trackEvent } from "@/lib/analytics"
 import { useOnline } from "@/lib/use-online"
 
 const LOGISTICS_ICONS = {
@@ -22,6 +23,7 @@ export function Venue() {
     const fullAddress = `${VENUE.name}, ${VENUE.address}, ${VENUE.neighborhood}`
     try {
       await navigator.clipboard.writeText(fullAddress)
+      trackEvent("venue_copy_address")
       setCopied(true)
       window.setTimeout(() => setCopied(false), 2500)
     } catch {
@@ -74,6 +76,7 @@ export function Venue() {
               href={VENUE.directionsUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackEvent("venue_directions")}
               className="mt-1 inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-4 font-bold text-white shadow-lg shadow-brand/25 transition hover:bg-brand-dark"
             >
               <Navigation className="h-5 w-5" />
@@ -122,6 +125,7 @@ export function Venue() {
                     href={VENUE.directionsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackEvent("venue_directions")}
                     className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-ink ring-1 ring-ink/15 transition hover:ring-ink"
                   >
                     <Navigation className="h-4 w-4 text-brand" />
