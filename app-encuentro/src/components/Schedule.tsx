@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { PartyPopper } from "lucide-react"
+import { ExternalLink, PartyPopper, Radio } from "lucide-react"
 import { schedule } from "@/data/encuentro"
 import { SectionHeading } from "@/components/SectionHeading"
 import { trackEvent } from "@/lib/analytics"
@@ -86,9 +86,24 @@ export function Schedule() {
         </div>
 
         <div role="tabpanel" id={`panel-${day.id}`} aria-labelledby={`tab-${day.id}`}>
-          <div className="mb-8">
-            <h3 className="font-display text-2xl font-bold uppercase text-white sm:text-3xl">{day.title}</h3>
-            <p className="text-white/60">{day.subtitle}</p>
+          <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div>
+              <h3 className="font-display text-2xl font-bold uppercase text-white sm:text-3xl">{day.title}</h3>
+              <p className="text-white/60">{day.subtitle}</p>
+            </div>
+            {day.streamUrl && (
+              <a
+                href={day.streamUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent("stream_click", { day: day.id, source: "schedule" })}
+                className="inline-flex w-fit shrink-0 items-center gap-2 rounded-full bg-berry px-5 py-3 text-sm font-bold text-white shadow-lg shadow-berry/30 transition hover:brightness-110"
+              >
+                <Radio className="h-4 w-4" />
+                {day.streamLabel ?? "Ver stream en vivo"}
+                <ExternalLink className="h-4 w-4 opacity-80" />
+              </a>
+            )}
           </div>
 
           <ol className="relative flex flex-col gap-3">

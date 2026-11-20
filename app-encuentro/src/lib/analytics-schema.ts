@@ -42,6 +42,7 @@ export type AnalyticsEventType =
   | "photo_upload_offline_queue"
   | "share_click"
   | "contact_click"
+  | "stream_click"
   | "pwa_prompt_shown"
   | "pwa_installed"
   | "offline_usage"
@@ -90,6 +91,7 @@ export interface AnalyticsTotals {
   shareClicks: number
   whatsappClicks: number
   emailClicks: number
+  streamClicks: number
 }
 
 export interface AnalyticsDayBucket {
@@ -140,6 +142,7 @@ const INTERACTIVE_EVENT_TYPES = new Set<AnalyticsEventType>([
   "photo_upload_offline_queue",
   "share_click",
   "contact_click",
+  "stream_click",
   "pwa_installed",
 ])
 
@@ -172,6 +175,7 @@ export function createEmptySnapshot(): AnalyticsSnapshot {
       shareClicks: 0,
       whatsappClicks: 0,
       emailClicks: 0,
+      streamClicks: 0,
     },
     devices: {
       android: 0,
@@ -251,6 +255,7 @@ export function normalizeSnapshot(raw: unknown): AnalyticsSnapshot {
     shareClicks: asNonNegInt(rawTotals.shareClicks),
     whatsappClicks: asNonNegInt(rawTotals.whatsappClicks),
     emailClicks: asNonNegInt(rawTotals.emailClicks),
+    streamClicks: asNonNegInt(rawTotals.streamClicks),
   }
 
   const rawDevices = (obj.devices ?? {}) as Partial<Record<AnalyticsDevice, unknown>>
@@ -380,6 +385,8 @@ export function formatEventLabel(event: AnalyticsEventItem): string {
       return `Compartió la app (${meta.method === "native" ? "menú nativo" : "link copiado"})`
     case "contact_click":
       return meta.channel === "whatsapp" ? "Tocó contacto por WhatsApp" : "Tocó contacto por Email"
+    case "stream_click":
+      return `Abrió stream en vivo (${meta.day === "domingo" ? "Domingo 22" : "Sábado 21"})`
     case "pwa_prompt_shown":
       return `Se mostró aviso de instalar app (${String(meta.platform ?? "web")})`
     case "pwa_installed":
@@ -528,6 +535,9 @@ export function applyEventsToSnapshot(
           if (meta.channel === "whatsapp") next.totals.whatsappClicks += 1
           else if (meta.channel === "email") next.totals.emailClicks += 1
           break
+        case "stream_click":
+          next.totals.streamClicks += 1
+          break
         case "pwa_installed":
           next.totals.pwaInstalls += 1
           break
@@ -617,6 +627,7 @@ export function mergeSnapshots(baseRaw: AnalyticsSnapshot, incomingRaw: Analytic
     shareClicks: Math.max(a.totals.shareClicks, b.totals.shareClicks),
     whatsappClicks: Math.max(a.totals.whatsappClicks, b.totals.whatsappClicks),
     emailClicks: Math.max(a.totals.emailClicks, b.totals.emailClicks),
+    streamClicks: Math.max(a.totals.streamClicks, b.totals.streamClicks),
   }
 
   const byDay: Record<string, AnalyticsDayBucket> = { ...a.byDay }

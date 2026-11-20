@@ -29,8 +29,25 @@ export interface ScheduleDay {
   tag: string
   title: string
   subtitle: string
+  streamUrl?: string
+  streamLabel?: string
   items: ScheduleItem[]
 }
+
+export const LIVE_STREAMS = [
+  {
+    dayId: "sabado",
+    shortLabel: "Stream Sábado 21",
+    label: "Ver stream del Sábado 21",
+    url: "https://www.youtube.com/live/CX4rlG0G7WY",
+  },
+  {
+    dayId: "domingo",
+    shortLabel: "Stream Domingo 22",
+    label: "Ver stream del Domingo 22",
+    url: "https://www.youtube.com/live/UCQ_yE4u_Z4",
+  },
+] as const
 
 export const EVENT = {
   edition: "9º",
@@ -185,6 +202,8 @@ export const schedule: ScheduleDay[] = [
     tag: "La bienvenida",
     title: "Apertura y recepción de delegaciones",
     subtitle: "Acreditaciones, desfile inaugural, espectáculo y ágape de bienvenida",
+    streamUrl: "https://www.youtube.com/live/CX4rlG0G7WY",
+    streamLabel: "Ver stream del Sábado 21",
     items: [
       {
         start: "17:30",
@@ -225,6 +244,8 @@ export const schedule: ScheduleDay[] = [
     tag: "Acción y fiesta",
     title: "Jornada central de partidos y cierre",
     subtitle: "Dos bloques de partidos, ceremonia de cierre y Gran Fiesta Mixed Ability",
+    streamUrl: "https://www.youtube.com/live/UCQ_yE4u_Z4",
+    streamLabel: "Ver stream del Domingo 22",
     items: [
       {
         start: "09:00",

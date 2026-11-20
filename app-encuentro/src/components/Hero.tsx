@@ -1,6 +1,6 @@
 import Image from "next/image"
-import { ArrowRight, Camera, CalendarDays } from "lucide-react"
-import { EVENT, VENUE, teams } from "@/data/encuentro"
+import { ArrowRight, CalendarDays, Camera, ExternalLink, Radio } from "lucide-react"
+import { EVENT, LIVE_STREAMS, VENUE, teams } from "@/data/encuentro"
 import { Countdown } from "@/components/Countdown"
 import { Mosaic } from "@/components/Mosaic"
 import { ShareButton } from "@/components/ShareButton"
@@ -81,6 +81,33 @@ export function Hero() {
               label="Compartir app"
               className="rounded-full bg-white px-6 py-3.5 font-bold text-ink ring-2 ring-ink/15 hover:ring-ink [&>svg]:h-5 [&>svg]:w-5"
             />
+          </div>
+
+          <div className="mt-1 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-ink/10">
+            <p className="mb-2.5 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-berry">
+              <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-berry opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-berry" />
+              </span>
+              Transmisión en vivo · YouTube Live
+            </p>
+            <div className="flex flex-wrap gap-2.5">
+              {LIVE_STREAMS.map((stream) => (
+                <a
+                  key={stream.dayId}
+                  href={stream.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-track-event="stream_click"
+                  data-track-meta={JSON.stringify({ day: stream.dayId, source: "hero" })}
+                  className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-xs font-bold text-white transition hover:bg-berry sm:text-sm"
+                >
+                  <Radio className="h-4 w-4 text-sky" />
+                  {stream.shortLabel}
+                  <ExternalLink className="h-3.5 w-3.5 opacity-75" />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 

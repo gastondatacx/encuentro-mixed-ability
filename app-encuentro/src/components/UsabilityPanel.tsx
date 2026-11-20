@@ -19,6 +19,7 @@ import {
   Lock,
   LogOut,
   MapPin,
+  Radio,
   RefreshCw,
   Search,
   Share2,
@@ -301,6 +302,7 @@ export function UsabilityPanel() {
       ["Acciones", "Compartir app", String(snapshot.totals.shareClicks)],
       ["Acciones", "Clics WhatsApp", String(snapshot.totals.whatsappClicks)],
       ["Acciones", "Clics Email", String(snapshot.totals.emailClicks)],
+      ["Acciones", "Clics en Stream en vivo", String(snapshot.totals.streamClicks)],
     ]
     for (const secId of SECTION_IDS) {
       rows.push(["Seccion vista", SECTION_LABELS[secId], String(snapshot.sections[secId] ?? 0)])
@@ -831,9 +833,17 @@ export function UsabilityPanel() {
             <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-ink/10">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">Acciones útiles</p>
               <h2 className="mb-4 font-display text-2xl font-extrabold uppercase text-ink">
-                Sede, compartir y contacto
+                Sede, stream y contacto
               </h2>
               <ul className="grid grid-cols-2 gap-2.5 text-xs">
+                <li className="col-span-2 flex items-center justify-between rounded-xl bg-berry/10 px-3.5 py-2.5 ring-1 ring-berry/20">
+                  <span className="flex items-center gap-1.5 font-bold text-ink">
+                    <Radio className="h-3.5 w-3.5 text-berry" /> Clics en Stream en vivo
+                  </span>
+                  <strong className="font-display text-lg text-berry">
+                    {snapshot.totals.streamClicks}
+                  </strong>
+                </li>
                 <li className="flex items-center justify-between rounded-xl bg-paper px-3.5 py-2.5">
                   <span className="flex items-center gap-1.5 font-semibold text-ink/75">
                     <MapPin className="h-3.5 w-3.5 text-brand" /> Ampliar mapa

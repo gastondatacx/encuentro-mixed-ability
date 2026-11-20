@@ -52,7 +52,8 @@ function createEmptyAnalytics() {
       addressCopies: 0,
       shareClicks: 0,
       whatsappClicks: 0,
-      emailClicks: 0
+      emailClicks: 0,
+      streamClicks: 0
     },
     devices: { android: 0, ios: 0, desktop: 0 },
     sections: {
@@ -163,6 +164,7 @@ function formatEventLabel(ev) {
     case 'photo_upload_offline_queue': return 'Guardó ' + (meta.count || 1) + ' archivo(s) en cola sin conexión';
     case 'share_click': return 'Compartió la app';
     case 'contact_click': return meta.channel === 'whatsapp' ? 'Tocó contacto por WhatsApp' : 'Tocó contacto por Email';
+    case 'stream_click': return 'Abrió stream en vivo (' + (meta.day === 'domingo' ? 'Domingo 22' : 'Sábado 21') + ')';
     case 'pwa_prompt_shown': return 'Se mostró aviso de instalar app';
     case 'pwa_installed': return 'Instaló la app (PWA)';
     case 'offline_usage': return 'Usó la app sin conexión en el predio';
@@ -176,7 +178,7 @@ function applyEventsToStats(stats, events) {
     fixture_block_toggle: true, team_search: true, team_ficha_open: true, map_expand: true,
     venue_directions: true, venue_copy_address: true, faq_open: true, photo_drive_open: true,
     photo_upload_success: true, photo_upload_offline_queue: true, share_click: true,
-    contact_click: true, pwa_installed: true
+    contact_click: true, stream_click: true, pwa_installed: true
   };
 
   stats.knownVisitors = Array.isArray(stats.knownVisitors) ? stats.knownVisitors : [];
@@ -290,6 +292,8 @@ function applyEventsToStats(stats, events) {
       } else if (ev.type === 'contact_click') {
         if (meta.channel === 'whatsapp') stats.totals.whatsappClicks += 1;
         else if (meta.channel === 'email') stats.totals.emailClicks += 1;
+      } else if (ev.type === 'stream_click') {
+        stats.totals.streamClicks = (stats.totals.streamClicks || 0) + 1;
       } else if (ev.type === 'pwa_installed') {
         stats.totals.pwaInstalls += 1;
       }
