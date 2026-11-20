@@ -1,8 +1,10 @@
 import { SiteNav } from "@/components/SiteNav"
 import { Hero } from "@/components/Hero"
 import { Schedule } from "@/components/Schedule"
+import { Fixture } from "@/components/Fixture"
 import { Teams } from "@/components/Teams"
 import { Venue } from "@/components/Venue"
+import { OfficialGuide } from "@/components/OfficialGuide"
 import { PhotoUpload } from "@/components/PhotoUpload"
 import { Contact } from "@/components/Contact"
 import { InstallPrompt } from "@/components/InstallPrompt"
@@ -20,8 +22,10 @@ export default function Home() {
       <main>
         <Hero />
         <Schedule />
+        <Fixture />
         <Teams />
         <Venue />
+        <OfficialGuide />
         <PhotoUpload />
       </main>
       <Contact />

@@ -1,9 +1,10 @@
-const CACHE_NAME = "encuentro-pwa-v4"
+const CACHE_NAME = "encuentro-pwa-v5"
 
 const SHELL_ASSETS = [
   "/",
   "/manifest.webmanifest",
   "/logo.png",
+  "/mapa-predio.jpg",
   "/favicon.png",
   "/apple-icon.png",
   "/icon-192.png",

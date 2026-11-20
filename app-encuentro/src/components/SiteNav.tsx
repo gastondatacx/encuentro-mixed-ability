@@ -2,15 +2,17 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import { CalendarDays, Camera, Home, MapPin, Users } from "lucide-react"
+import { BookOpen, CalendarDays, Camera, Home, MapPin, Trophy, Users } from "lucide-react"
 import { ShareButton } from "@/components/ShareButton"
 import { cn } from "@/lib/utils"
 
 const LINKS = [
   { id: "inicio", label: "Inicio", icon: Home },
   { id: "agenda", label: "Agenda", icon: CalendarDays },
+  { id: "fixture", label: "Fixture", icon: Trophy },
   { id: "equipos", label: "Equipos", icon: Users },
   { id: "sede", label: "Sede", icon: MapPin },
+  { id: "guia", label: "Guía", icon: BookOpen },
   { id: "fotos", label: "Fotos", icon: Camera },
 ] as const
 
@@ -113,7 +115,7 @@ export function SiteNav() {
         className="fixed inset-x-3 bottom-3 z-40 rounded-2xl border border-ink/10 bg-white/95 shadow-[0_10px_40px_-10px_rgba(11,22,64,0.45)] backdrop-blur-lg md:hidden"
         style={{ marginBottom: "env(safe-area-inset-bottom)" }}
       >
-        <ul className="grid grid-cols-5">
+        <ul className="grid grid-cols-7">
           {LINKS.map(({ id, label, icon: Icon }) => {
             const isActive = active === id
             return (
@@ -122,17 +124,17 @@ export function SiteNav() {
                   href={`#${id}`}
                   aria-current={isActive ? "true" : undefined}
                   className={cn(
-                    "flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-semibold transition-colors",
+                    "flex flex-col items-center gap-0.5 py-2 text-[10px] font-semibold transition-colors",
                     isActive ? "text-brand" : "text-ink/55"
                   )}
                 >
                   <span
                     className={cn(
-                      "flex h-8 w-12 items-center justify-center rounded-full transition-colors",
+                      "flex h-7 w-9 items-center justify-center rounded-full transition-colors",
                       isActive && "bg-brand/10"
                     )}
                   >
-                    <Icon className="h-5 w-5" strokeWidth={isActive ? 2.5 : 2} />
+                    <Icon className="h-4 w-4" strokeWidth={isActive ? 2.5 : 2} />
                   </span>
                   {label}
                 </a>
