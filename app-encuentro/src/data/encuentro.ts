@@ -330,7 +330,7 @@ export const fixtureCategoryB: FixtureRoundB[] = [
     slots: [
       {
         time: "10:00",
-        cancha2a: "La Premix León B vs Hualas XV B",
+        cancha2a: "La Premix León B vs Hualas Femenino",
         cancha2b: "Los Hakas (Monte Grande) B vs Toros XV B",
         cancha3a: "Unidos vs Depo Francesa",
         cancha3b: "PUMPAS XV B vs San Agustín B",
@@ -367,7 +367,7 @@ export const fixtureCategoryB: FixtureRoundB[] = [
         cancha2a: "Ardillas Mixed vs Toros XV B",
         cancha2b: "Unidos vs INKA XV B",
         cancha3a: "PUMPAS XV B vs San José XV B",
-        cancha3b: "Caburé vs Hualas XV B",
+        cancha3b: "Caburé vs Hualas Femenino",
       },
       {
         time: "11:20",
@@ -407,7 +407,7 @@ export const fixtureCategoryB: FixtureRoundB[] = [
         time: "12:20",
         cancha2a: "INKA XV B vs Toritos XV B",
         cancha2b: "San José XV B vs COIRONES XV B",
-        cancha3a: "Hualas XV B vs Cuyis B",
+        cancha3a: "Hualas Femenino vs Cuyis B",
         cancha3b: "Toros XV B vs UBUNTU B",
       },
       {
@@ -433,7 +433,7 @@ export const fixtureCategoryB: FixtureRoundB[] = [
       {
         time: "14:00",
         cancha2a: "PUMPAS XV B vs COIRONES XV B",
-        cancha2b: "Hualas XV B vs CÓRDOBA MIX B",
+        cancha2b: "Hualas Femenino vs CÓRDOBA MIX B",
         cancha3a: "Ardillas Mixed B vs UBUNTU B",
         cancha3b: "Unidos B vs Toritos XV B",
       },
@@ -480,7 +480,7 @@ export const fixtureCategoryB: FixtureRoundB[] = [
       },
       {
         time: "15:40",
-        cancha2a: "Old Resian Club B vs Hualas XV B",
+        cancha2a: "Old Resian Club B vs Hualas Femenino",
         cancha2b: "Somos Abejas B vs Toros XV B",
         cancha3a: "Tótem XV B vs INKA XV B",
         cancha3b: "San José XV B vs Albatros B",
