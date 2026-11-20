@@ -334,8 +334,8 @@ export function PhotoUpload() {
   const progress = busy && total ? Math.round((doneCount / total) * 100) : 0
 
   return (
-    <section id="fotos" className="scroll-mt-16 py-20 sm:py-28">
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 lg:grid-cols-[1fr_1.3fr]">
+    <section id="fotos" className="scroll-mt-16 bg-white py-24 sm:py-32">
+      <div className="mx-auto grid max-w-6xl gap-12 px-5 lg:grid-cols-[1fr_1.3fr]">
         <div>
           <SectionHeading
             eyebrow="Álbum compartido"
@@ -346,7 +346,7 @@ export function PhotoUpload() {
             href={DRIVE_FOLDER_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 font-bold text-ink ring-2 ring-ink/15 transition hover:ring-ink"
+            className="mt-2 inline-flex items-center gap-2 rounded-full bg-paper px-6 py-3.5 font-bold text-ink ring-1 ring-ink/15 transition hover:ring-ink"
           >
             <ExternalLink className="h-5 w-5" />
             Ver álbum en Google Drive
@@ -355,7 +355,7 @@ export function PhotoUpload() {
 
         <form
           onSubmit={onSubmit}
-          className="flex flex-col gap-5 rounded-3xl bg-white p-5 shadow-[0_30px_70px_-30px_rgba(11,22,64,0.35)] ring-1 ring-ink/10 sm:p-7"
+          className="flex flex-col gap-6 rounded-3xl bg-paper p-6 shadow-sm ring-1 ring-ink/10 sm:p-8"
         >
           <div className="flex flex-col gap-2">
             <label htmlFor="uploader-name" className="text-sm font-bold text-ink">
@@ -368,7 +368,7 @@ export function PhotoUpload() {
               onChange={(e) => setName(e.target.value)}
               placeholder="Ej: Toros XV / Familia Gómez"
               disabled={busy}
-              className="h-12 rounded-xl bg-paper px-4 text-ink outline-none ring-1 ring-ink/10 transition placeholder:text-ink/40 focus:ring-2 focus:ring-brand disabled:opacity-60"
+              className="h-12 rounded-xl bg-white px-4 text-ink outline-none ring-1 ring-ink/10 transition placeholder:text-ink/40 focus:ring-2 focus:ring-brand disabled:opacity-60"
             />
           </div>
 

@@ -16,25 +16,6 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-type ZoneId =
-  | "all"
-  | "rugby-1"
-  | "rugby-2-3"
-  | "rugby-4"
-  | "hockey"
-  | "basquet"
-  | "central"
-  | "accesos"
-
-interface ZoneInfo {
-  id: Exclude<ZoneId, "all">
-  pillLabel: string
-  title: string
-  badge: string
-  details: string
-  services: string[]
-}
-
 const LEGEND_ITEMS = [
   { label: "Estacionamiento", icon: Car, color: "bg-brand" },
   { label: "Médico", icon: Cross, color: "bg-berry" },
@@ -47,74 +28,7 @@ const LEGEND_ITEMS = [
   { label: "Baños", icon: Users, color: "bg-tangerine" },
 ] as const
 
-const ZONES: ZoneInfo[] = [
-  {
-    id: "rugby-1",
-    pillLabel: "Rugby 1 + Postas",
-    title: "Cancha Rugby 1 y Postas Rugby",
-    badge: "Categoría A · Pre Mix · Desfile",
-    details:
-      "Cancha principal del predio, ubicada en el sector este sobre el acceso vehicular. Al norte limita con Postas Rugby y al oeste con la Mesa de Control, Carpa de artistas / Streaming, Escenario y Ambulancia.",
-    services: ["Categoría A (Pre Mix)", "Postas Rugby", "Mesa de Control", "Carpa Streaming", "Ambulancia"],
-  },
-  {
-    id: "rugby-2-3",
-    pillLabel: "Rugby 2 y 3 (2a·2b·3a·3b)",
-    title: "Canchas Rugby 2 (2a·2b) y Rugby 3 (3a·3b)",
-    badge: "Categoría B · Recreativo (4 subcanchas)",
-    details:
-      "Sector oeste con dos canchas paralelas subdivididas en 4 subcanchas transversales (2a, 2b, 3a y 3b). Entre ambas se ubican la Mesa de Control y un Puesto de Hidratación.",
-    services: ["Canchas 2a, 2b, 3a y 3b", "Mesa de Control", "Puesto Hidratación", "Baños al noreste"],
-  },
-  {
-    id: "rugby-4",
-    pillLabel: "Rugby 4",
-    title: "Cancha Rugby 4",
-    badge: "Categoría A · Pre Mix · Sector Norte",
-    details:
-      "Cancha ubicada en el sector norte del club, con Mesa de Control y Puesto de Hidratación propios sobre su acceso sur.",
-    services: ["Categoría A (Pre Mix)", "Mesa de Control", "Puesto Hidratación"],
-  },
-  {
-    id: "hockey",
-    pillLabel: "Hockey",
-    title: "Cancha de Hockey",
-    badge: "Sector Suroeste · Junto al ingreso",
-    details:
-      "Ubicada inmediatamente a la izquierda del ingreso principal por Av. Juan B. Justo 6500. Cuenta con Carpa de Autoridades al norte y Mesa de Control, Hidratación, Duchas y Baños sobre su frente sur.",
-    services: ["Carpa Autoridades", "Mesa de Control", "Puesto Hidratación", "Duchas y Baños"],
-  },
-  {
-    id: "basquet",
-    pillLabel: "Básquet",
-    title: "Cancha de Básquet",
-    badge: "Sector Noreste · Edificio",
-    details:
-      "Sector de Básquet Mixed Ability ubicado en el complejo edilicio del noreste del predio, cruzando la calle interna hacia el norte de Rugby 1.",
-    services: ["Básquet Mixed Ability", "Acceso por calle interna este"],
-  },
-  {
-    id: "central",
-    pillLabel: "Gazebos · Comedor · Escenario",
-    title: "Corredor Central de Delegaciones y Servicios",
-    badge: "Corazón del encuentro",
-    details:
-      "Eje central entre Rugby 2/3 y Rugby 1 donde se encuentran los Gazebos de todas las delegaciones, Baños, Médico / Kinesiología, Hidratación, Escenario principal, Comedor (retiro de viandas y ágape), Acreditaciones y Cantina.",
-    services: ["Gazebos Delegaciones", "Acreditaciones", "Comedor", "Escenario", "Médico / Kinesiología", "Cantina"],
-  },
-  {
-    id: "accesos",
-    pillLabel: "Ingresos y Estacionamiento",
-    title: "Av. Juan B. Justo 6500 · 2 Ingresos y Estacionamiento",
-    badge: "Accesos al Club",
-    details:
-      "Dos ingresos señalados sobre Av. Juan B. Justo 6500 (acceso central peatonal/vehicular frente a Hockey y acceso este hacia el estacionamiento lateral). Estacionamiento interno en forma de L ($5.000).",
-    services: ["Ingreso Central", "Ingreso Este", "Estacionamiento interno", "Duchas y Baños cercanos"],
-  },
-]
-
 export function FieldMap() {
-  const [selected, setSelected] = useState<ZoneId>("all")
   const [expanded, setExpanded] = useState(false)
 
   useEffect(() => {
@@ -130,8 +44,6 @@ export function FieldMap() {
       window.removeEventListener("keydown", onKeyDown)
     }
   }, [expanded])
-
-  const activeInfo = selected === "all" ? null : ZONES.find((z) => z.id === selected) ?? null
 
   return (
     <div className="mt-16 rounded-3xl bg-paper p-5 ring-1 ring-ink/10 sm:p-8">
@@ -159,7 +71,7 @@ export function FieldMap() {
       </div>
 
       {/* Referencias oficiales de la Hoja 2 */}
-      <ul className="mb-5 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-9">
+      <ul className="mb-6 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-9">
         {LEGEND_ITEMS.map(({ label, icon: Icon, color }) => (
           <li
             key={label}
@@ -173,37 +85,6 @@ export function FieldMap() {
         ))}
       </ul>
 
-      {/* Selector rápido de sectores */}
-      <div className="mb-5 flex flex-wrap gap-2" role="group" aria-label="Consultar sector del mapa">
-        <button
-          type="button"
-          onClick={() => setSelected("all")}
-          className={cn(
-            "cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-bold transition sm:text-sm",
-            selected === "all"
-              ? "bg-ink text-white"
-              : "bg-white text-ink/75 ring-1 ring-ink/10 hover:text-ink"
-          )}
-        >
-          Todo el predio
-        </button>
-        {ZONES.map((zone) => (
-          <button
-            key={zone.id}
-            type="button"
-            onClick={() => setSelected(selected === zone.id ? "all" : zone.id)}
-            className={cn(
-              "cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-bold transition sm:text-sm",
-              selected === zone.id
-                ? "bg-brand text-white"
-                : "bg-white text-ink/75 ring-1 ring-ink/10 hover:text-ink"
-            )}
-          >
-            {zone.pillLabel}
-          </button>
-        ))}
-      </div>
-
       {/* Mapa oficial 3D */}
       <div className="overflow-hidden rounded-2xl bg-[#07183c] p-2 shadow-sm ring-1 ring-ink/10 sm:p-4">
         <div className="mx-auto max-w-2xl overflow-hidden rounded-xl">
@@ -215,42 +96,6 @@ export function FieldMap() {
             onClick={() => setExpanded(true)}
           />
         </div>
-      </div>
-
-      {/* Detalle del sector seleccionado */}
-      <div className="mt-5 rounded-2xl bg-white p-5 ring-1 ring-ink/10">
-        {activeInfo ? (
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h4 className="font-display text-2xl font-extrabold uppercase text-ink">
-                {activeInfo.title}
-              </h4>
-              <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-brand">
-                {activeInfo.badge}
-              </span>
-            </div>
-            <p className="text-sm leading-relaxed text-ink/75">{activeInfo.details}</p>
-            <ul className="mt-1 flex flex-wrap gap-2">
-              {activeInfo.services.map((svc) => (
-                <li
-                  key={svc}
-                  className="rounded-full bg-paper px-3 py-1 text-xs font-semibold text-ink/75"
-                >
-                  {svc}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : (
-          <div>
-            <h4 className="font-display text-xl font-bold uppercase text-ink">
-              Distribución completa de Córdoba Rugby Club
-            </h4>
-            <p className="mt-1 text-sm text-ink/65">
-              Dos ingresos sobre Av. Juan B. Justo 6500 con estacionamiento interno. Canchas de Rugby 1, 2 (2a·2b), 3 (3a·3b), 4, Postas Rugby, Hockey y Básquet, con el corredor central de Gazebos, Comedor, Escenario, Acreditaciones, Médico y Ambulancia.
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Modal ampliado */}
