@@ -145,7 +145,7 @@ export function UsabilityPanel() {
 
   const [snapshot, setSnapshot] = useState<AnalyticsSnapshot>(() => createEmptySnapshot())
   const [driveConnected, setDriveConnected] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [manualRefreshing, setManualRefreshing] = useState(false)
   const [errorMsg, setErrorMsg] = useState("")
   const [autoRefresh, setAutoRefresh] = useState(true)
   const [lastFetchedAt, setLastFetchedAt] = useState<string | null>(null)
@@ -154,8 +154,8 @@ export function UsabilityPanel() {
   const [scriptSource, setScriptSource] = useState<string | null>(null)
   const [copiedScript, setCopiedScript] = useState(false)
 
-  const fetchMetrics = useCallback(async (includeScript = false) => {
-    setLoading(true)
+  const fetchMetrics = useCallback(async (includeScript = false, manual = false) => {
+    if (manual) setManualRefreshing(true)
     setErrorMsg("")
     try {
       await flushAnalyticsQueue(false)
@@ -177,7 +177,7 @@ export function UsabilityPanel() {
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : "Error de conexión al leer el panel.")
     } finally {
-      setLoading(false)
+      if (manual) setManualRefreshing(false)
     }
   }, [])
 
@@ -548,17 +548,17 @@ export function UsabilityPanel() {
                   : "bg-paper text-ink/60 ring-ink/10"
               )}
             >
-              <Activity className={cn("h-3.5 w-3.5", autoRefresh && "animate-pulse")} />
+              <Activity className="h-3.5 w-3.5" />
               Auto 15s: {autoRefresh ? "ON" : "OFF"}
             </button>
 
             <button
               type="button"
-              onClick={() => void fetchMetrics(false)}
-              disabled={loading}
-              className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-brand px-4 py-2 text-xs font-bold text-white transition hover:bg-brand-dark disabled:opacity-60"
+              onClick={() => void fetchMetrics(false, true)}
+              disabled={manualRefreshing}
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-brand px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-dark disabled:opacity-60"
             >
-              <RefreshCw className={cn("h-3.5 w-3.5", loading && "animate-spin")} />
+              <RefreshCw className={cn("h-3.5 w-3.5", manualRefreshing && "animate-spin")} />
               Actualizar
             </button>
 
@@ -763,7 +763,7 @@ export function UsabilityPanel() {
                     <div className="h-3 overflow-hidden rounded-full bg-paper">
                       <div
                         className={cn(
-                          "h-full rounded-full transition-all duration-500",
+                          "h-full rounded-full transition-[width] duration-500",
                           SECTION_COLORS[id] ?? "bg-brand"
                         )}
                         style={{ width: `${views > 0 ? Math.max(barWidth, 4) : 0}%` }}
@@ -919,7 +919,7 @@ export function UsabilityPanel() {
                       <span className="text-[11px] font-bold tabular-nums text-ink">{count}</span>
                       <div className="flex h-28 w-full items-end rounded-lg bg-paper px-1">
                         <div
-                          className="w-full rounded-t-md bg-brand transition-all duration-300"
+                          className="w-full rounded-t-md bg-brand transition-[height] duration-300"
                           style={{ height: `${pct}%` }}
                         />
                       </div>

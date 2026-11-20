@@ -63,10 +63,10 @@ export function Hero() {
               href="#agenda"
               data-track-event="nav_click"
               data-track-meta='{"section":"agenda","source":"hero"}'
-              className="group inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3.5 font-bold text-white shadow-lg shadow-brand/30 transition hover:bg-brand-dark"
+              className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3.5 font-bold text-white shadow-lg shadow-brand/30 transition-colors hover:bg-brand-dark"
             >
               Ver cronograma
-              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="h-5 w-5" />
             </a>
             <a
               href="#fotos"
@@ -85,10 +85,7 @@ export function Hero() {
 
           <div className="mt-1 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-ink/10">
             <p className="mb-2.5 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-berry">
-              <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-berry opacity-75" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-berry" />
-              </span>
+              <span className="h-2.5 w-2.5 rounded-full bg-berry" aria-hidden="true" />
               Transmisión en vivo · YouTube Live
             </p>
             <div className="flex flex-wrap gap-2.5">
@@ -112,7 +109,7 @@ export function Hero() {
         </div>
 
         <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-          <div className="relative rotate-[-2deg] rounded-[2rem] bg-white p-6 shadow-[0_30px_80px_-20px_rgba(11,22,64,0.45)] ring-1 ring-ink/5 transition-transform duration-500 hover:rotate-0 sm:p-8">
+          <div className="relative rounded-[2rem] bg-white p-6 shadow-[0_30px_80px_-20px_rgba(11,22,64,0.45)] ring-1 ring-ink/5 sm:p-8">
             <div className="relative aspect-[1256/768] w-full">
               <Image
                 src="/logo.png"

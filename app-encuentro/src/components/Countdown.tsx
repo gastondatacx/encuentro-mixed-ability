@@ -33,10 +33,7 @@ export function Countdown() {
         href="#agenda"
         className="inline-flex items-center gap-3 rounded-2xl bg-berry px-5 py-4 font-display text-xl font-bold uppercase tracking-wide text-white shadow-lg shadow-berry/30"
       >
-        <span className="relative flex h-3 w-3">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-          <span className="relative inline-flex h-3 w-3 rounded-full bg-white" />
-        </span>
+        <span className="h-3 w-3 shrink-0 rounded-full bg-white" aria-hidden="true" />
         ¡El Encuentro está en marcha! Ver qué pasa ahora
       </a>
     )
@@ -53,7 +50,7 @@ export function Countdown() {
             key={label}
             className="flex w-[72px] flex-col items-center rounded-2xl bg-ink py-3 text-white shadow-lg shadow-ink/20 sm:w-20"
           >
-            <dd className="font-display text-3xl font-bold tabular-nums leading-none sm:text-4xl">
+            <dd className="w-full text-center font-display text-3xl font-bold tabular-nums leading-none sm:text-4xl">
               {now ? String(value).padStart(2, "0") : "--"}
             </dd>
             <dt className="mt-1 text-[10px] font-semibold uppercase tracking-widest text-white/60">

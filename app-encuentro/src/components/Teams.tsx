@@ -22,7 +22,7 @@ function TeamCard({
 
   const content = (
     <>
-      <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl bg-paper ring-4 ring-paper transition-transform duration-300 group-hover:scale-105 sm:h-28 sm:w-28">
+      <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl bg-paper ring-4 ring-paper sm:h-28 sm:w-28">
         {!failed ? (
           // Se usa <img> para poder detectar logos faltantes y mostrar las siglas.
           // eslint-disable-next-line @next/next/no-img-element
@@ -64,12 +64,12 @@ function TeamCard({
           type="button"
           onClick={onSelect}
           aria-label={`Ver información de ${team.name}`}
-          className="group flex w-full cursor-pointer flex-col items-center gap-3 rounded-2xl bg-white p-4 text-center ring-1 ring-ink/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(11,22,64,0.45)] hover:ring-brand/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:p-5"
+          className="group flex w-full cursor-pointer flex-col items-center gap-3 rounded-2xl bg-white p-4 text-center ring-1 ring-ink/10 transition-shadow duration-200 hover:shadow-[0_18px_40px_-18px_rgba(11,22,64,0.45)] hover:ring-brand/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:p-5"
         >
           {content}
         </button>
       ) : (
-        <div className="group flex w-full flex-col items-center gap-3 rounded-2xl bg-white p-4 text-center ring-1 ring-ink/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(11,22,64,0.45)] hover:ring-brand/40 sm:p-5">
+        <div className="group flex w-full flex-col items-center gap-3 rounded-2xl bg-white p-4 text-center ring-1 ring-ink/10 transition-shadow duration-200 hover:shadow-[0_18px_40px_-18px_rgba(11,22,64,0.45)] hover:ring-brand/40 sm:p-5">
           {content}
         </div>
       )}

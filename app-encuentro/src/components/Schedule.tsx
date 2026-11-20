@@ -65,7 +65,7 @@ export function Schedule() {
                   trackEvent("schedule_day", { day: d.id })
                 }}
                 className={cn(
-                  "flex flex-col items-start rounded-xl px-4 py-3 text-left transition-all sm:px-5",
+                  "flex flex-col items-start rounded-xl px-4 py-3 text-left transition-colors sm:px-5",
                   selected ? "bg-white text-ink shadow-lg" : "text-white/70 hover:bg-white/10 hover:text-white"
                 )}
               >
@@ -145,10 +145,7 @@ export function Schedule() {
                         )}
                       >
                         {status === "live" && (
-                          <span className="relative flex h-2 w-2">
-                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-                            <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
-                          </span>
+                          <span className="h-2 w-2 rounded-full bg-white" aria-hidden="true" />
                         )}
                         {status === "live" ? "Ahora" : "Próximo"}
                       </span>

@@ -24,17 +24,40 @@ function useActiveSection() {
     const sections = LINKS.map((l) => document.getElementById(l.id)).filter(
       (el): el is HTMLElement => el !== null
     )
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-        if (visible) setActive(visible.target.id)
-      },
-      { rootMargin: "-35% 0px -55% 0px", threshold: [0, 0.25, 0.5, 1] }
-    )
-    sections.forEach((s) => observer.observe(s))
-    return () => observer.disconnect()
+    if (!sections.length) return
+
+    let rafId: number | null = null
+    const updateActive = () => {
+      rafId = null
+      const anchorY = Math.min(window.innerHeight * 0.35, 220)
+      let current = sections[0].id
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= anchorY) {
+          current = section.id
+        } else {
+          break
+        }
+      }
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 40) {
+        current = sections[sections.length - 1].id
+      }
+      setActive((prev) => (prev === current ? prev : current))
+    }
+
+    const onScroll = () => {
+      if (rafId === null) {
+        rafId = window.requestAnimationFrame(updateActive)
+      }
+    }
+
+    updateActive()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", onScroll, { passive: true })
+    return () => {
+      if (rafId !== null) window.cancelAnimationFrame(rafId)
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onScroll)
+    }
   }, [])
 
   return active
@@ -56,7 +79,7 @@ export function SiteNav() {
       {/* Barra superior */}
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-40 transition-all duration-300",
+          "fixed inset-x-0 top-0 z-40 transition-colors duration-200",
           scrolled
             ? "border-b border-ink/10 bg-white/85 shadow-sm backdrop-blur-lg"
             : "bg-transparent"
