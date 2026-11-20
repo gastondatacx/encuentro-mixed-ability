@@ -23,14 +23,13 @@ import {
   Search,
   Share2,
   Smartphone,
-  Trash2,
   Trophy,
   Users,
   WifiOff,
   X,
 } from "lucide-react"
 import { ANALYTICS_PIN, EVENT } from "@/data/encuentro"
-import { clearLocalAnalyticsMirror, flushAnalyticsQueue } from "@/lib/analytics"
+import { flushAnalyticsQueue } from "@/lib/analytics"
 import {
   SECTION_IDS,
   SECTION_LABELS,
@@ -95,6 +94,20 @@ function formatDateTimeAR(iso: string): string {
 function formatFilterLabel(raw: string): string {
   if (raw === "sabado") return "Agenda: Sábado 21"
   if (raw === "domingo") return "Agenda: Domingo 22"
+  if (raw.startsWith("deporte:")) {
+    const val = raw.replace("deporte:", "")
+    return val === "hockey" ? "Fixture: Deporte Hockey ID" : "Fixture: Deporte Rugby"
+  }
+  if (raw.startsWith("hockey_zona:")) {
+    const val = raw.replace("hockey_zona:", "")
+    if (val === "proyeccion") return "Hockey: Zona Proyección"
+    if (val === "desarrollo") return "Hockey: Zona Desarrollo"
+    return "Hockey: Todas las zonas"
+  }
+  if (raw.startsWith("hockey_cancha:")) {
+    const val = raw.replace("hockey_cancha:", "")
+    return val === "all" ? "Hockey: Todas las canchas" : `Hockey: Cancha ${val}`
+  }
   if (raw.startsWith("categoria:")) {
     const val = raw.replace("categoria:", "")
     return val === "all" ? "Fixture: Todas las categorías" : `Fixture: Categoría ${val}`
@@ -126,7 +139,6 @@ function sumValues(map: Record<string, number>): number {
 export function UsabilityPanel() {
   const [unlocked, setUnlocked] = useState(false)
   const [pinInput, setPinInput] = useState("")
-  const [storedPin, setStoredPin] = useState("")
   const [authError, setAuthError] = useState("")
   const [checkingAuth, setCheckingAuth] = useState(true)
 
@@ -136,9 +148,6 @@ export function UsabilityPanel() {
   const [errorMsg, setErrorMsg] = useState("")
   const [autoRefresh, setAutoRefresh] = useState(true)
   const [lastFetchedAt, setLastFetchedAt] = useState<string | null>(null)
-
-  const [showResetConfirm, setShowResetConfirm] = useState(false)
-  const [resetting, setResetting] = useState(false)
 
   const [showScriptModal, setShowScriptModal] = useState(false)
   const [scriptSource, setScriptSource] = useState<string | null>(null)
@@ -175,7 +184,6 @@ export function UsabilityPanel() {
     try {
       const saved = window.localStorage.getItem(PANEL_AUTH_KEY)
       if (saved && saved === ANALYTICS_PIN) {
-        setStoredPin(saved)
         setUnlocked(true)
       }
     } catch {
@@ -231,7 +239,6 @@ export function UsabilityPanel() {
     } catch {
       // Ignorar
     }
-    setStoredPin(candidate)
     setUnlocked(true)
     setPinInput("")
   }
@@ -243,30 +250,6 @@ export function UsabilityPanel() {
       // Ignorar
     }
     setUnlocked(false)
-    setStoredPin("")
-  }
-
-  const handleReset = async () => {
-    setResetting(true)
-    setErrorMsg("")
-    try {
-      const res = await fetch("/api/analytics", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "reset", pin: storedPin || ANALYTICS_PIN }),
-      })
-      if (!res.ok) throw new Error("No se pudieron reiniciar las métricas.")
-      clearLocalAnalyticsMirror()
-      const data = (await res.json()) as { driveConnected?: boolean; snapshot?: unknown }
-      setSnapshot(data.snapshot ? normalizeSnapshot(data.snapshot) : createEmptySnapshot())
-      setDriveConnected(Boolean(data.driveConnected))
-      setShowResetConfirm(false)
-      setLastFetchedAt(new Date().toISOString())
-    } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : "Error al reiniciar métricas.")
-    } finally {
-      setResetting(false)
-    }
   }
 
   const openScriptModal = () => {
@@ -597,15 +580,6 @@ export function UsabilityPanel() {
 
             <button
               type="button"
-              onClick={() => setShowResetConfirm(true)}
-              className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-berry/10 px-3.5 py-2 text-xs font-bold text-berry transition hover:bg-berry hover:text-white"
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-              Reiniciar
-            </button>
-
-            <button
-              type="button"
               onClick={handleLogout}
               title="Cerrar sesión del panel"
               className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-paper px-3.5 py-2 text-xs font-bold text-ink/70 ring-1 ring-ink/10 transition hover:bg-ink hover:text-white"
@@ -641,34 +615,6 @@ export function UsabilityPanel() {
             >
               Ver script para Drive
             </button>
-          </div>
-        )}
-
-        {showResetConfirm && (
-          <div className="flex flex-col justify-between gap-4 rounded-2xl bg-berry/10 p-5 ring-1 ring-berry/30 sm:flex-row sm:items-center">
-            <div>
-              <p className="text-sm font-bold text-berry">¿Reiniciar todas las estadísticas?</p>
-              <p className="text-xs text-ink/75">
-                Esta acción pone en cero los contadores del panel y del archivo en Google Drive.
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setShowResetConfirm(false)}
-                className="cursor-pointer rounded-full bg-white px-4 py-2 text-xs font-bold text-ink ring-1 ring-ink/15"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                onClick={handleReset}
-                disabled={resetting}
-                className="cursor-pointer rounded-full bg-berry px-4 py-2 text-xs font-bold text-white hover:brightness-110 disabled:opacity-60"
-              >
-                {resetting ? "Reiniciando…" : "Sí, poner en cero"}
-              </button>
-            </div>
           </div>
         )}
 

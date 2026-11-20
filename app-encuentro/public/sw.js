@@ -1,4 +1,4 @@
-const CACHE_NAME = "encuentro-pwa-v8"
+const CACHE_NAME = "encuentro-pwa-v9"
 
 const SHELL_ASSETS = [
   "/",
@@ -180,6 +180,27 @@ self.addEventListener("fetch", (event) => {
             "<!doctype html><html lang='es'><meta charset='utf-8'><title>Sin conexión</title><body style='font-family:sans-serif;padding:2rem;text-align:center'><h1>Sin conexión</h1><p>Abrí la app al menos una vez con internet para guardar los datos en el teléfono.</p></body></html>",
             { status: 503, headers: { "Content-Type": "text/html; charset=utf-8" } }
           )
+        }
+      })()
+    )
+    return
+  }
+
+  // Bundles de Next.js (/_next/): Network-First con fallback a caché offline
+  if (url.pathname.startsWith("/_next/")) {
+    event.respondWith(
+      (async () => {
+        const cache = await caches.open(CACHE_NAME)
+        try {
+          const networkResponse = await fetch(request)
+          if (networkResponse && networkResponse.ok) {
+            cache.put(request, networkResponse.clone()).catch(() => {})
+          }
+          return networkResponse
+        } catch {
+          const cached = await cache.match(request)
+          if (cached) return cached
+          return new Response("", { status: 504, statusText: "Offline" })
         }
       })()
     )

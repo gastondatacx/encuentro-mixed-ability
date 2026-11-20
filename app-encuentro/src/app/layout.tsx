@@ -54,8 +54,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es-AR" className={`${barlow.variable} ${inter.variable}`}>
-      <body className="min-h-screen">
+    <html lang="es-AR" className={`${barlow.variable} ${inter.variable}`} suppressHydrationWarning>
+      <body className="min-h-screen" suppressHydrationWarning>
         {children}
         <OfflineManager />
         <AnalyticsTracker />

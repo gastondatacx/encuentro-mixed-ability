@@ -151,20 +151,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: valid }, { status: valid ? 200 : 401 })
   }
 
-  if (body.action === "reset") {
-    if (typeof body.pin !== "string" || body.pin.trim() !== ANALYTICS_PIN) {
-      return NextResponse.json({ ok: false, error: "PIN incorrecto" }, { status: 401 })
-    }
-    const empty = createEmptySnapshot()
-    await writeServerSnapshot(empty)
-    const driveReset = await postDriveAnalytics({ action: "analytics_reset" })
-    return NextResponse.json({
-      ok: true,
-      driveConnected: driveReset.connected,
-      snapshot: driveReset.snapshot ?? empty,
-    })
-  }
-
   if (body.action === "track") {
     const events = Array.isArray(body.events) ? body.events.slice(0, 100) : []
     if (!events.length) {

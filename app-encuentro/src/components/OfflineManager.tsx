@@ -43,6 +43,20 @@ export function OfflineManager() {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return
 
+    if (process.env.NODE_ENV === "development") {
+      navigator.serviceWorker
+        .getRegistrations()
+        .then((regs) => Promise.all(regs.map((r) => r.unregister())))
+        .catch(() => {})
+      if ("caches" in window) {
+        window.caches
+          .keys()
+          .then((keys) => Promise.all(keys.map((k) => window.caches.delete(k))))
+          .catch(() => {})
+      }
+      return
+    }
+
     let cancelled = false
 
     const sendUrlsToSw = (target: ServiceWorker | null | undefined) => {

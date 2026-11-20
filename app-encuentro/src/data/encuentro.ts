@@ -149,6 +149,28 @@ export interface FixtureRoundB {
   slots: FixtureSlotB[]
 }
 
+export type HockeyMatchCategory = "proyeccion" | "desarrollo" | "especial"
+
+export interface HockeyMatchCell {
+  match: string
+  category: HockeyMatchCategory
+}
+
+export interface HockeyFixtureSlot {
+  time: string
+  cancha1: HockeyMatchCell
+  cancha2: HockeyMatchCell
+  cancha3: HockeyMatchCell
+}
+
+export interface HockeyFixtureBlock {
+  id: string
+  block: "manana" | "tarde"
+  title: string
+  hours: string
+  slots: HockeyFixtureSlot[]
+}
+
 export interface FaqItem {
   question: string
   answer: string
@@ -215,7 +237,7 @@ export const schedule: ScheduleDay[] = [
         end: "12:55",
         title: "1ra ronda de partidos (Bloque Mañana)",
         description:
-          "Partidos dinámicos y cortos con turnos cada 20 min en 2 canchas Pre Mix (Canchas 1 y 4) y 4 canchas Recreativo (Canchas 2a, 2b, 3a y 3b).",
+          "Partidos dinámicos y cortos con turnos cada 20 min en Rugby (2 canchas Pre Mix y 4 canchas Recreativo) y en Hockey ID (3 canchas de Proyección y Desarrollo).",
       },
       {
         start: "12:30",
@@ -229,7 +251,7 @@ export const schedule: ScheduleDay[] = [
         end: "16:15",
         title: "2da ronda de partidos · Definiciones y últimos partidos",
         description:
-          "Bloque tarde en Categoría A Pre Mix (14:00 a 16:15 hs) y Categoría B Recreativo Fechas 4 y 5 (14:00 a 16:00 hs).",
+          "Bloque tarde en Rugby Categoría A Pre Mix (14:00 a 16:15 hs), Rugby Categoría B Recreativo (14:00 a 16:00 hs) y Hockey ID Proyección y Desarrollo (hasta las 16:20 hs).",
       },
       {
         start: "16:30",
@@ -469,6 +491,191 @@ export const fixtureCategoryB: FixtureRoundB[] = [
         cancha2b: "Libre (Fin Recreativo)",
         cancha3a: "Libre (Fin Recreativo)",
         cancha3b: "Libre (Fin Recreativo)",
+      },
+    ],
+  },
+]
+
+export const hockeyFixtureMeta = {
+  start: "10:00 hs",
+  slotDuration: "Turnos cada 20 min",
+  matchFormat: "15 min de juego + 5 min de rotación",
+  distribution: "3 Canchas: 1 Proyección · 2 y 3 Desarrollo",
+  yellowNote: "Los partidos en amarillo en Canchas 2 y 3 corresponden a Proyección.",
+} as const
+
+export const hockeyZones = {
+  proyeccion: [
+    {
+      name: "Zona 1",
+      teams: ["LIONAS/LIONES A", "SANTA MÓNICA A", "SUYAI VERDE", "CABURÉ A", "ATHLETIC ROJO"],
+    },
+    {
+      name: "Zona 2",
+      teams: [
+        "LIONAS/LIONES B",
+        "SANTA MÓNICA B",
+        "TRC ARCO IRIS",
+        "CABURÉ B",
+        "ATHLETIC NEGRO",
+        "SAN JOSÉ XV",
+      ],
+    },
+  ],
+  desarrollo: [
+    {
+      name: "Zona 1",
+      teams: [
+        "LIONAS/LIONES",
+        "SANTA MÓNICA A",
+        "DEPORTIVA FRANCESA",
+        "SUYAI AZUL",
+        "CABA",
+        "ATHLETIC BLANCO",
+      ],
+    },
+    {
+      name: "Zona 2",
+      teams: [
+        "SANTA MÓNICA B",
+        "TRC ARCO IRIS",
+        "SUYAI AMARILLO",
+        "LUCIÉRNAGAS",
+        "SAN JOSÉ XV",
+        "ATHLETIC DORADO",
+      ],
+    },
+  ],
+} as const
+
+export const fixtureHockey: HockeyFixtureBlock[] = [
+  {
+    id: "hockey-manana",
+    block: "manana",
+    title: "Bloque Mañana",
+    hours: "10:00 a 12:40 hs",
+    slots: [
+      {
+        time: "10:00",
+        cancha1: { match: "SAN JOSE vs. SANTA MONICA B", category: "proyeccion" },
+        cancha2: { match: "CABA vs. SANTA MONICA A", category: "desarrollo" },
+        cancha3: { match: "ATHLETIC DORADO vs. LUCIERNAGAS", category: "desarrollo" },
+      },
+      {
+        time: "10:20",
+        cancha1: { match: "LIONAS/LIONES A vs. SUYAI VERDE", category: "proyeccion" },
+        cancha2: { match: "ATHLETIC BLANCO vs. LIONAS/LIONES", category: "desarrollo" },
+        cancha3: { match: "SAN JOSE vs. SUYAI AMARILLO", category: "desarrollo" },
+      },
+      {
+        time: "10:40",
+        cancha1: { match: "CABURE B vs. ARCO IRIS", category: "proyeccion" },
+        cancha2: { match: "SUYAI AZUL vs. DEPOR FRANCESA", category: "desarrollo" },
+        cancha3: { match: "SANTA MONICA B vs. ARCO IRIS", category: "desarrollo" },
+      },
+      {
+        time: "11:00",
+        cancha1: { match: "ATHLETIC NEGRO vs. LIONAS/LIONES B", category: "proyeccion" },
+        cancha2: { match: "SANTA MONICA A vs. LIONAS/LIONES", category: "desarrollo" },
+        cancha3: { match: "SUYAI AMARILLO vs. LUCIERNAGAS", category: "desarrollo" },
+      },
+      {
+        time: "11:20",
+        cancha1: { match: "ATHLETIC ROJO vs. SANTA MONICA A", category: "proyeccion" },
+        cancha2: { match: "CABURE B vs. ATHLETIC NEGRO", category: "proyeccion" },
+        cancha3: { match: "ATHLETIC DORADO vs. ARCO IRIS", category: "desarrollo" },
+      },
+      {
+        time: "11:40",
+        cancha1: { match: "CABURE A vs. LIONAS/LIONES A", category: "proyeccion" },
+        cancha2: { match: "ATHLETIC BLANCO vs. DEPOR FRANCESA", category: "desarrollo" },
+        cancha3: { match: "SAN JOSE vs. SANTA MONICA B", category: "desarrollo" },
+      },
+      {
+        time: "12:00",
+        cancha1: { match: "SANTA MONICA B vs. LIONAS/LIONES B", category: "proyeccion" },
+        cancha2: { match: "CABA vs. SUYAI AZUL", category: "desarrollo" },
+        cancha3: { match: "ATHLETIC ROJO vs. SUYAI VERDE", category: "proyeccion" },
+      },
+      {
+        time: "12:20",
+        cancha1: { match: "ATHLETIC NEGRO vs. ARCO IRIS", category: "proyeccion" },
+        cancha2: { match: "DEPOR FRANCESA vs. LIONAS/LIONES", category: "desarrollo" },
+        cancha3: { match: "ARCO IRIS vs. LUCIERNAGAS", category: "desarrollo" },
+      },
+      {
+        time: "12:40",
+        cancha1: { match: "SAN JOSE vs. CABURE B", category: "proyeccion" },
+        cancha2: { match: "CABURE A vs. SUYAI VERDE", category: "proyeccion" },
+        cancha3: { match: "ATHLETIC DORADO vs. SAN JOSE", category: "desarrollo" },
+      },
+    ],
+  },
+  {
+    id: "hockey-tarde",
+    block: "tarde",
+    title: "Bloque Tarde",
+    hours: "13:00 a 16:00 hs",
+    slots: [
+      {
+        time: "13:00",
+        cancha1: { match: "SANTA MONICA A vs. SUYAI VERDE", category: "proyeccion" },
+        cancha2: { match: "SANTA MONICA A vs. SUYAI AZUL", category: "desarrollo" },
+        cancha3: { match: "BARBARIANS vs. RIVAL A DEFINIR", category: "especial" },
+      },
+      {
+        time: "13:20",
+        cancha1: { match: "ATHLETIC ROJO vs. CABURE A", category: "proyeccion" },
+        cancha2: { match: "ATHLETIC BLANCO vs. CABA", category: "desarrollo" },
+        cancha3: { match: "SUYAI AMARILLO vs. SANTA MONICA B", category: "desarrollo" },
+      },
+      {
+        time: "13:40",
+        cancha1: { match: "ARCO IRIS vs. LIONAS/LIONES B", category: "proyeccion" },
+        cancha2: { match: "SUYAI AZUL vs. LIONAS/LIONES", category: "desarrollo" },
+        cancha3: { match: "SANTA MONICA B vs. LUCIERNAGAS", category: "desarrollo" },
+      },
+      {
+        time: "14:00",
+        cancha1: { match: "SANTA MONICA B vs. CABURE B", category: "proyeccion" },
+        cancha2: { match: "DEPOR FRANCESA vs. CABA", category: "desarrollo" },
+        cancha3: { match: "ARCO IRIS vs. SAN JOSE", category: "desarrollo" },
+      },
+      {
+        time: "14:20",
+        cancha1: { match: "LIONAS/LIONES A vs. ATHLETIC ROJO", category: "proyeccion" },
+        cancha2: { match: "SANTA MONICA A vs. ATHLETIC BLANCO", category: "desarrollo" },
+        cancha3: { match: "SUYAI AMARILLO vs. ATHLETIC DORADO", category: "desarrollo" },
+      },
+      {
+        time: "14:40",
+        cancha1: { match: "SANTA MONICA A vs. CABURE A", category: "proyeccion" },
+        cancha2: { match: "ATHLETIC NEGRO vs. SAN JOSE", category: "proyeccion" },
+        cancha3: { match: "ARCO IRIS vs. SANTA MONICA B", category: "proyeccion" },
+      },
+      {
+        time: "15:00",
+        cancha1: { match: "SELECCIÓN ARGENTINA vs. RIVAL A DEFINIR", category: "especial" },
+        cancha2: { match: "CABA vs. LIONAS/LIONES", category: "desarrollo" },
+        cancha3: { match: "SANTA MONICA B vs. ATHLETIC DORADO", category: "desarrollo" },
+      },
+      {
+        time: "15:20",
+        cancha1: { match: "CABURE B vs. LIONAS/LIONES B", category: "proyeccion" },
+        cancha2: { match: "SUYAI AZUL vs. ATHLETIC BLANCO", category: "desarrollo" },
+        cancha3: { match: "ARCO IRIS vs. SUYAI AMARILLO", category: "desarrollo" },
+      },
+      {
+        time: "15:40",
+        cancha1: { match: "ARCO IRIS vs. SAN JOSE", category: "proyeccion" },
+        cancha2: { match: "DEPOR FRANCESA vs. SANTA MONICA A", category: "desarrollo" },
+        cancha3: { match: "LIONAS/LIONES A vs. SANTA MONICA A", category: "proyeccion" },
+      },
+      {
+        time: "16:00",
+        cancha1: { match: "SANTA MONICA B vs. ATHLETIC NEGRO", category: "proyeccion" },
+        cancha2: { match: "SAN JOSE vs. LIONAS/LIONES B", category: "proyeccion" },
+        cancha3: { match: "SAN JOSE vs. LUCIERNAGAS", category: "desarrollo" },
       },
     ],
   },
