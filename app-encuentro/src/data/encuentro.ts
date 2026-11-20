@@ -237,7 +237,7 @@ export const schedule: ScheduleDay[] = [
         end: "12:55",
         title: "1ra ronda de partidos (Bloque Mañana)",
         description:
-          "Partidos dinámicos y cortos con turnos cada 20 min en Rugby (2 canchas Pre Mix y 4 canchas Recreativo) y en Hockey ID (3 canchas de Proyección y Desarrollo).",
+          "Partidos dinámicos y cortos con turnos cada 20 min en Rugby (2 canchas Pre Mix y 4 canchas Recreativo) y en Hockey (3 canchas de Proyección y Desarrollo).",
       },
       {
         start: "12:30",
@@ -251,7 +251,7 @@ export const schedule: ScheduleDay[] = [
         end: "16:15",
         title: "2da ronda de partidos · Definiciones y últimos partidos",
         description:
-          "Bloque tarde en Rugby Categoría A Pre Mix (14:00 a 16:15 hs), Rugby Categoría B Recreativo (14:00 a 16:00 hs) y Hockey ID Proyección y Desarrollo (hasta las 16:20 hs).",
+          "Bloque tarde en Rugby Categoría A Pre Mix (14:00 a 16:15 hs), Rugby Categoría B Recreativo (14:00 a 16:00 hs) y Hockey Proyección y Desarrollo (hasta las 16:20 hs).",
       },
       {
         start: "16:30",

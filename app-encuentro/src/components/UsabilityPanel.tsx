@@ -96,7 +96,7 @@ function formatFilterLabel(raw: string): string {
   if (raw === "domingo") return "Agenda: Domingo 22"
   if (raw.startsWith("deporte:")) {
     const val = raw.replace("deporte:", "")
-    return val === "hockey" ? "Fixture: Deporte Hockey ID" : "Fixture: Deporte Rugby"
+    return val === "hockey" ? "Fixture: Deporte Hockey" : "Fixture: Deporte Rugby"
   }
   if (raw.startsWith("hockey_zona:")) {
     const val = raw.replace("hockey_zona:", "")

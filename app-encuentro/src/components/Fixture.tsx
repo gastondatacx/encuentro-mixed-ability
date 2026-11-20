@@ -247,7 +247,7 @@ export function Fixture() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={
-                sport === "rugby" ? "Buscar equipo en el fixture…" : "Buscar equipo en Hockey ID…"
+                sport === "rugby" ? "Buscar equipo en el fixture…" : "Buscar equipo en Hockey…"
               }
               aria-label="Buscar equipo en el fixture"
               className="h-14 w-full rounded-full bg-white pl-12 pr-12 text-base text-ink shadow-sm ring-1 ring-ink/15 outline-none transition placeholder:text-ink/40 focus:ring-2 focus:ring-brand [&::-webkit-search-cancel-button]:hidden"
@@ -274,7 +274,7 @@ export function Fixture() {
           {(
             [
               { id: "rugby", title: "Rugby", sub: "6 canchas · Pre Mix y Recreativo" },
-              { id: "hockey", title: "Hockey ID", sub: "3 canchas · Proyección y Desarrollo" },
+              { id: "hockey", title: "Hockey", sub: "3 canchas · Proyección y Desarrollo" },
             ] as const
           ).map((tab) => {
             const active = sport === tab.id
@@ -314,14 +314,14 @@ export function Fixture() {
             <p className="font-semibold text-ink">
               {otherSportCount === 1 ? "Hay 1 partido" : `Hay ${otherSportCount} partidos`} para “
               {query}” en{" "}
-              <strong>{sport === "rugby" ? "Hockey ID" : "Rugby"}</strong>.
+              <strong>{sport === "rugby" ? "Hockey" : "Rugby"}</strong>.
             </p>
             <button
               type="button"
               onClick={() => handleSportChange(sport === "rugby" ? "hockey" : "rugby")}
               className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-brand px-4 py-1.5 text-xs font-bold text-white transition hover:bg-brand-dark"
             >
-              Ver en {sport === "rugby" ? "Hockey ID" : "Rugby"}
+              Ver en {sport === "rugby" ? "Hockey" : "Rugby"}
               <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>
@@ -343,7 +343,7 @@ export function Fixture() {
           </li>
         </ul>
 
-        {/* Distribución de zonas y canchas (Hockey ID) */}
+        {/* Distribución de zonas y canchas (Hockey) */}
         {sport === "hockey" && (
           <div className="mb-6 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-ink/10">
             <button
@@ -557,7 +557,7 @@ export function Fixture() {
           </div>
         ) : (
           <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-            <div className="flex flex-wrap gap-2" role="tablist" aria-label="Zona de Hockey ID">
+            <div className="flex flex-wrap gap-2" role="tablist" aria-label="Zona de Hockey">
               {(
                 [
                   { id: "all", label: "Todas las zonas" },
@@ -630,7 +630,7 @@ export function Fixture() {
               }}
               className="cursor-pointer rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-white hover:bg-brand"
             >
-              Ver fixture completo de {sport === "rugby" ? "Rugby" : "Hockey ID"}
+              Ver fixture completo de {sport === "rugby" ? "Rugby" : "Hockey"}
             </button>
           </div>
         ) : sport === "rugby" ? (
@@ -914,7 +914,7 @@ export function Fixture() {
             )}
           </div>
         ) : (
-          /* HOCKEY ID */
+          /* HOCKEY */
           <div className="flex flex-col gap-5">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-ink/10 pb-3">
               <div>
@@ -922,7 +922,7 @@ export function Fixture() {
                   3 Canchas · Proyección y Desarrollo
                 </span>
                 <h3 className="font-display text-3xl font-extrabold uppercase text-ink">
-                  Fixture Hockey ID
+                  Fixture Hockey
                 </h3>
               </div>
               <span className="rounded-full bg-white px-3.5 py-1 text-xs font-bold text-ink/75 ring-1 ring-ink/10">
