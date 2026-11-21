@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import { BookOpen, CalendarDays, Camera, Home, MapPin, Trophy, Users } from "lucide-react"
+import { BookOpen, CalendarDays, Camera, Home, Lock, MapPin, Trophy, Users } from "lucide-react"
 import { ShareButton } from "@/components/ShareButton"
+import { UsabilityPanel } from "@/components/UsabilityPanel"
 import { trackEvent } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
 
@@ -66,6 +67,7 @@ function useActiveSection() {
 export function SiteNav() {
   const active = useActiveSection()
   const [scrolled, setScrolled] = useState(false)
+  const [panelOpen, setPanelOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12)
@@ -73,6 +75,26 @@ export function SiteNav() {
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
+
+  useEffect(() => {
+    const openPanel = () => setPanelOpen(true)
+    window.addEventListener("open-usability-panel", openPanel)
+    return () => window.removeEventListener("open-usability-panel", openPanel)
+  }, [])
+
+  useEffect(() => {
+    if (!panelOpen) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPanelOpen(false)
+    }
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    window.addEventListener("keydown", onKeyDown)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      window.removeEventListener("keydown", onKeyDown)
+    }
+  }, [panelOpen])
 
   return (
     <>
@@ -131,6 +153,15 @@ export function SiteNav() {
             </nav>
 
             <ShareButton className="rounded-full bg-brand/10 px-3.5 py-2 text-xs font-bold text-brand ring-1 ring-brand/20 hover:bg-brand hover:text-white sm:text-sm" />
+            <button
+              type="button"
+              onClick={() => setPanelOpen(true)}
+              aria-label="Abrir panel de usabilidad"
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-ink/5 px-3 py-2 text-xs font-bold text-ink/80 ring-1 ring-ink/15 transition hover:bg-ink hover:text-white sm:text-sm"
+            >
+              <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+              <span>Panel</span>
+            </button>
           </div>
         </div>
       </header>
@@ -170,6 +201,17 @@ export function SiteNav() {
           })}
         </ul>
       </nav>
+
+      {panelOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Panel de Usabilidad"
+          className="fixed inset-0 z-50 overflow-y-auto bg-paper"
+        >
+          <UsabilityPanel onClose={() => setPanelOpen(false)} />
+        </div>
+      )}
     </>
   )
 }

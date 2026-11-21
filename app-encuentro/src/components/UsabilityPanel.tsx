@@ -30,17 +30,40 @@ import {
   X,
 } from "lucide-react"
 import { ANALYTICS_PIN, EVENT } from "@/data/encuentro"
-import { flushAnalyticsQueue } from "@/lib/analytics"
+import { flushAnalyticsQueue, readLocalAnalyticsMirror } from "@/lib/analytics"
 import {
   SECTION_IDS,
   SECTION_LABELS,
   createEmptySnapshot,
+  mergeSnapshots,
   normalizeSnapshot,
   type AnalyticsSnapshot,
 } from "@/lib/analytics-schema"
+import { useOnline } from "@/lib/use-online"
 import { cn } from "@/lib/utils"
 
 const PANEL_AUTH_KEY = "encuentro-panel-auth-v1"
+const SERVER_CACHE_KEY = "encuentro-analytics-server-cache-v1"
+
+function readCachedServerSnapshot(): AnalyticsSnapshot {
+  if (typeof window === "undefined") return createEmptySnapshot()
+  try {
+    const raw = window.localStorage.getItem(SERVER_CACHE_KEY)
+    if (!raw) return createEmptySnapshot()
+    return normalizeSnapshot(JSON.parse(raw))
+  } catch {
+    return createEmptySnapshot()
+  }
+}
+
+function writeCachedServerSnapshot(snapshot: AnalyticsSnapshot): void {
+  if (typeof window === "undefined") return
+  try {
+    window.localStorage.setItem(SERVER_CACHE_KEY, JSON.stringify(snapshot))
+  } catch {
+    // Sin espacio en localStorage
+  }
+}
 
 const SECTION_COLORS: Record<string, string> = {
   inicio: "bg-brand",
@@ -137,16 +160,16 @@ function sumValues(map: Record<string, number>): number {
   return Object.values(map).reduce((acc, v) => acc + v, 0)
 }
 
-export function UsabilityPanel() {
+export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
+  const online = useOnline()
   const [unlocked, setUnlocked] = useState(false)
   const [pinInput, setPinInput] = useState("")
   const [authError, setAuthError] = useState("")
-  const [checkingAuth, setCheckingAuth] = useState(true)
 
   const [snapshot, setSnapshot] = useState<AnalyticsSnapshot>(() => createEmptySnapshot())
   const [driveConnected, setDriveConnected] = useState(false)
   const [manualRefreshing, setManualRefreshing] = useState(false)
-  const [errorMsg, setErrorMsg] = useState("")
+  const [usingOfflineCache, setUsingOfflineCache] = useState(false)
   const [autoRefresh, setAutoRefresh] = useState(true)
   const [lastFetchedAt, setLastFetchedAt] = useState<string | null>(null)
 
@@ -156,7 +179,15 @@ export function UsabilityPanel() {
 
   const fetchMetrics = useCallback(async (includeScript = false, manual = false) => {
     if (manual) setManualRefreshing(true)
-    setErrorMsg("")
+    const localMerged = mergeSnapshots(readCachedServerSnapshot(), readLocalAnalyticsMirror())
+    setSnapshot(localMerged)
+
+    if (typeof window !== "undefined" && !window.navigator.onLine) {
+      setUsingOfflineCache(true)
+      if (manual) setManualRefreshing(false)
+      return
+    }
+
     try {
       await flushAnalyticsQueue(false)
       const query = includeScript ? "?includeScript=1" : ""
@@ -169,13 +200,17 @@ export function UsabilityPanel() {
         scriptSource?: string
       }
       if (data.snapshot) {
-        setSnapshot(normalizeSnapshot(data.snapshot))
+        const serverSnap = normalizeSnapshot(data.snapshot)
+        writeCachedServerSnapshot(serverSnap)
+        setSnapshot(mergeSnapshots(serverSnap, readLocalAnalyticsMirror()))
       }
       setDriveConnected(Boolean(data.driveConnected))
       if (data.scriptSource) setScriptSource(data.scriptSource)
+      setUsingOfflineCache(false)
       setLastFetchedAt(new Date().toISOString())
-    } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : "Error de conexión al leer el panel.")
+    } catch {
+      // Si se corta la señal al consultar, mantenemos los datos locales y en caché sin bloquear el panel.
+      setUsingOfflineCache(true)
     } finally {
       if (manual) setManualRefreshing(false)
     }
@@ -183,29 +218,24 @@ export function UsabilityPanel() {
 
   useEffect(() => {
     try {
-      const saved = window.localStorage.getItem(PANEL_AUTH_KEY)
-      if (saved && saved === ANALYTICS_PIN) {
-        setUnlocked(true)
-      }
+      window.localStorage.removeItem(PANEL_AUTH_KEY)
     } catch {
       // Ignorar errores de almacenamiento
-    } finally {
-      setCheckingAuth(false)
     }
   }, [])
 
   useEffect(() => {
     if (!unlocked) return
     void fetchMetrics(false)
-  }, [unlocked, fetchMetrics])
+  }, [unlocked, online, fetchMetrics])
 
   useEffect(() => {
-    if (!unlocked || !autoRefresh) return
+    if (!unlocked || !autoRefresh || !online) return
     const timer = window.setInterval(() => {
       void fetchMetrics(false)
     }, 15_000)
     return () => window.clearInterval(timer)
-  }, [unlocked, autoRefresh, fetchMetrics])
+  }, [unlocked, autoRefresh, online, fetchMetrics])
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault()
@@ -217,7 +247,7 @@ export function UsabilityPanel() {
     }
 
     let valid = candidate === ANALYTICS_PIN
-    if (!valid && window.navigator.onLine) {
+    if (!valid && typeof window !== "undefined" && window.navigator.onLine) {
       try {
         const res = await fetch("/api/analytics", {
           method: "POST",
@@ -235,11 +265,6 @@ export function UsabilityPanel() {
       return
     }
 
-    try {
-      window.localStorage.setItem(PANEL_AUTH_KEY, candidate)
-    } catch {
-      // Ignorar
-    }
     setUnlocked(true)
     setPinInput("")
   }
@@ -250,6 +275,8 @@ export function UsabilityPanel() {
     } catch {
       // Ignorar
     }
+    setPinInput("")
+    setAuthError("")
     setUnlocked(false)
   }
 
@@ -409,17 +436,6 @@ export function UsabilityPanel() {
     }
   }, [snapshot])
 
-  if (checkingAuth) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-paper p-6">
-        <div className="flex items-center gap-3 text-sm font-semibold text-ink/70">
-          <RefreshCw className="h-5 w-5 animate-spin text-brand" />
-          Cargando panel…
-        </div>
-      </div>
-    )
-  }
-
   if (!unlocked) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-ink px-5 py-12 text-white">
@@ -438,9 +454,16 @@ export function UsabilityPanel() {
             </div>
           </div>
 
-          <p className="mb-6 text-sm leading-relaxed text-ink/70">
+          <p className="mb-4 text-sm leading-relaxed text-ink/70">
             Acceso privado para consultar métricas de uso, secciones más visitadas, búsquedas e interacciones en tiempo real.
           </p>
+
+          {!online && (
+            <div className="mb-5 flex items-center gap-2 rounded-2xl bg-sky/10 px-4 py-2.5 text-xs font-semibold text-ink ring-1 ring-sky/30">
+              <WifiOff className="h-4 w-4 shrink-0 text-brand" aria-hidden="true" />
+              <span>Sin conexión · Podés ingresar igual con el PIN para ver los datos locales.</span>
+            </div>
+          )}
 
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <label htmlFor="panel-pin" className="text-xs font-bold uppercase tracking-wider text-ink/70">
@@ -452,6 +475,7 @@ export function UsabilityPanel() {
                 id="panel-pin"
                 type="password"
                 inputMode="numeric"
+                autoComplete="off"
                 autoFocus
                 value={pinInput}
                 onChange={(e) => setPinInput(e.target.value)}
@@ -475,13 +499,24 @@ export function UsabilityPanel() {
           </form>
 
           <div className="mt-6 border-t border-ink/10 pt-4 text-center">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-ink/60 transition hover:text-brand"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              Volver a la app del Encuentro
-            </Link>
+            {onClose ? (
+              <button
+                type="button"
+                onClick={onClose}
+                className="inline-flex cursor-pointer items-center gap-1.5 text-xs font-bold text-ink/60 transition hover:text-brand"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Volver a la app del Encuentro
+              </button>
+            ) : (
+              <Link
+                href="/"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-ink/60 transition hover:text-brand"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Volver a la app del Encuentro
+              </Link>
+            )}
           </div>
         </div>
       </main>
@@ -494,13 +529,24 @@ export function UsabilityPanel() {
       <header className="border-b border-ink/10 bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-3.5">
-            <Link
-              href="/"
-              title="Ir a la web pública"
-              className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-paper ring-1 ring-ink/10"
-            >
-              <Image src="/icon-192.png" alt="" fill sizes="44px" className="object-contain p-1" />
-            </Link>
+            {onClose ? (
+              <button
+                type="button"
+                onClick={onClose}
+                title="Ir a la web pública"
+                className="relative h-11 w-11 shrink-0 cursor-pointer overflow-hidden rounded-xl bg-paper ring-1 ring-ink/10"
+              >
+                <Image src="/icon-192.png" alt="" fill sizes="44px" className="object-contain p-1" />
+              </button>
+            ) : (
+              <Link
+                href="/"
+                title="Ir a la web pública"
+                className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-paper ring-1 ring-ink/10"
+              >
+                <Image src="/icon-192.png" alt="" fill sizes="44px" className="object-contain p-1" />
+              </Link>
+            )}
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">
@@ -530,13 +576,24 @@ export function UsabilityPanel() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 rounded-full bg-paper px-3.5 py-2 text-xs font-bold text-ink ring-1 ring-ink/10 transition hover:ring-ink"
-            >
-              <ExternalLink className="h-3.5 w-3.5" />
-              Ver web
-            </Link>
+            {onClose ? (
+              <button
+                type="button"
+                onClick={onClose}
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-paper px-3.5 py-2 text-xs font-bold text-ink ring-1 ring-ink/10 transition hover:ring-ink"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Volver a la app
+              </button>
+            ) : (
+              <Link
+                href="/"
+                className="inline-flex items-center gap-1.5 rounded-full bg-paper px-3.5 py-2 text-xs font-bold text-ink ring-1 ring-ink/10 transition hover:ring-ink"
+              >
+                <ExternalLink className="h-3.5 w-3.5" />
+                Ver web
+              </Link>
+            )}
 
             <button
               type="button"
@@ -594,9 +651,15 @@ export function UsabilityPanel() {
       </header>
 
       <main className="mx-auto flex max-w-7xl flex-col gap-8 px-5 pt-8">
-        {errorMsg && (
-          <div role="alert" className="rounded-2xl bg-berry/10 px-5 py-3.5 text-sm font-semibold text-berry ring-1 ring-berry/25">
-            {errorMsg}
+        {(!online || usingOfflineCache) && (
+          <div
+            role="status"
+            className="flex items-center gap-2.5 rounded-2xl bg-sky/10 px-5 py-3.5 text-sm font-semibold text-ink ring-1 ring-sky/30"
+          >
+            <WifiOff className="h-4 w-4 shrink-0 text-brand" aria-hidden="true" />
+            <span>
+              Modo sin conexión · Mostrando las métricas registradas localmente y la última copia sincronizada.
+            </span>
           </div>
         )}
 

@@ -1,4 +1,6 @@
-import { Mail, MessageCircle } from "lucide-react"
+"use client"
+
+import { Lock, Mail, MessageCircle } from "lucide-react"
 import { CONTACT, EVENT, VENUE } from "@/data/encuentro"
 import { Mosaic } from "@/components/Mosaic"
 
@@ -52,13 +54,23 @@ export function Contact() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col gap-2 border-t border-white/10 pt-6 text-sm text-white/50 sm:flex-row sm:justify-between">
+        <div className="mt-16 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-white/50 sm:flex-row sm:items-center sm:justify-between">
           <p>
             {EVENT.edition} {EVENT.name} · {EVENT.city} {EVENT.year}
           </p>
-          <p>
-            {VENUE.name} · {EVENT.sports.join(" · ")}
-          </p>
+          <div className="flex flex-wrap items-center gap-4">
+            <p>
+              {VENUE.name} · {EVENT.sports.join(" · ")}
+            </p>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent("open-usability-panel"))}
+              className="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-bold text-white/80 transition hover:bg-white/15 hover:text-white"
+            >
+              <Lock className="h-3.5 w-3.5 text-sky" aria-hidden="true" />
+              Panel de usabilidad (PIN)
+            </button>
+          </div>
         </div>
       </div>
     </footer>

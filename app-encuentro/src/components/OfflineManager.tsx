@@ -7,6 +7,7 @@ import { useOnline } from "@/lib/use-online"
 
 const STATIC_SHELL_URLS = [
   "/",
+  "/panel",
   "/manifest.webmanifest",
   "/logo.png",
   "/mapa-predio.jpg?v=2",
