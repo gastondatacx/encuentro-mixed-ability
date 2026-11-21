@@ -96,7 +96,7 @@ export function FieldMap() {
         <div className="mx-auto max-w-2xl overflow-hidden rounded-xl">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/mapa-predio.jpg"
+            src="/mapa-predio.jpg?v=2"
             alt="Mapa oficial de Córdoba Rugby Club con ubicación de canchas, ingresos, gazebos, comedor y servicios"
             className="block h-auto w-full cursor-zoom-in"
             onClick={openExpanded}
@@ -132,7 +132,7 @@ export function FieldMap() {
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/mapa-predio.jpg"
+              src="/mapa-predio.jpg?v=2"
               alt="Mapa oficial de Córdoba Rugby Club"
               className="block h-auto w-full rounded-xl"
             />

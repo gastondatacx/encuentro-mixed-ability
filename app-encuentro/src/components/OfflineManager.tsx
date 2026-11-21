@@ -9,7 +9,7 @@ const STATIC_SHELL_URLS = [
   "/",
   "/manifest.webmanifest",
   "/logo.png",
-  "/mapa-predio.jpg",
+  "/mapa-predio.jpg?v=2",
   "/favicon.png",
   "/apple-icon.png",
   "/icon-192.png",
