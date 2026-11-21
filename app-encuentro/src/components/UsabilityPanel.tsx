@@ -438,17 +438,17 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
 
   if (!unlocked) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-ink px-5 py-12 text-white">
-        <div className="w-full max-w-md rounded-3xl bg-white p-7 text-ink shadow-2xl ring-1 ring-white/15 sm:p-9">
-          <div className="mb-6 flex items-center gap-3.5">
-            <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-paper ring-1 ring-ink/10">
+      <main className="flex min-h-screen items-center justify-center bg-ink px-4 py-8 text-white sm:px-5 sm:py-12">
+        <div className="w-full max-w-md rounded-2xl bg-white p-5 text-ink shadow-2xl ring-1 ring-white/15 sm:rounded-3xl sm:p-9">
+          <div className="mb-5 flex items-center gap-3 sm:mb-6 sm:gap-3.5">
+            <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-paper ring-1 ring-ink/10 sm:h-12 sm:w-12">
               <Image src="/icon-192.png" alt="" fill sizes="48px" className="object-contain p-1" />
             </span>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">
+            <div className="min-w-0">
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-brand sm:text-xs sm:tracking-[0.2em]">
                 Organización · {EVENT.shortName}
               </p>
-              <h1 className="font-display text-3xl font-extrabold uppercase leading-none text-ink">
+              <h1 className="font-display text-2xl font-extrabold uppercase leading-none text-ink sm:text-3xl">
                 Panel de Usabilidad
               </h1>
             </div>
@@ -524,17 +524,17 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
   }
 
   return (
-    <div className="min-h-screen bg-paper pb-16 text-ink">
+    <div className="min-h-screen overflow-x-hidden bg-paper pb-20 text-ink">
       {/* Cabecera */}
       <header className="border-b border-ink/10 bg-white">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-5 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center gap-3.5">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3.5 px-3.5 py-4 sm:gap-4 sm:px-5 sm:py-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex min-w-0 items-start gap-3 sm:items-center sm:gap-3.5">
             {onClose ? (
               <button
                 type="button"
                 onClick={onClose}
                 title="Ir a la web pública"
-                className="relative h-11 w-11 shrink-0 cursor-pointer overflow-hidden rounded-xl bg-paper ring-1 ring-ink/10"
+                className="relative h-10 w-10 shrink-0 cursor-pointer overflow-hidden rounded-xl bg-paper ring-1 ring-ink/10 sm:h-11 sm:w-11"
               >
                 <Image src="/icon-192.png" alt="" fill sizes="44px" className="object-contain p-1" />
               </button>
@@ -542,16 +542,19 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
               <Link
                 href="/"
                 title="Ir a la web pública"
-                className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-paper ring-1 ring-ink/10"
+                className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-paper ring-1 ring-ink/10 sm:h-11 sm:w-11"
               >
                 <Image src="/icon-192.png" alt="" fill sizes="44px" className="object-contain p-1" />
               </Link>
             )}
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">
-                  Métricas en vivo · {EVENT.shortName}
-                </p>
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-brand sm:text-xs sm:tracking-[0.2em]">
+                Métricas en vivo · {EVENT.shortName}
+              </p>
+              <h1 className="font-display text-2xl font-extrabold uppercase leading-tight text-ink sm:text-3xl">
+                Panel de Usabilidad
+              </h1>
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                 <span className="inline-flex items-center gap-1 rounded-full bg-ink px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
                   Vercel Analytics activo
                 </span>
@@ -565,98 +568,95 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
                       : "bg-tangerine/15 text-tangerine ring-1 ring-tangerine/30 hover:bg-tangerine/25"
                   )}
                 >
-                  {driveConnected ? <Cloud className="h-3 w-3" /> : <CloudOff className="h-3 w-3" />}
+                  {driveConnected ? <Cloud className="h-3 w-3 shrink-0" /> : <CloudOff className="h-3 w-3 shrink-0" />}
                   {driveConnected ? "Google Drive conectado" : "Drive pendiente de script"}
                 </button>
               </div>
-              <h1 className="font-display text-3xl font-extrabold uppercase leading-tight text-ink">
-                Panel de Usabilidad
-              </h1>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center">
             {onClose ? (
               <button
                 type="button"
                 onClick={onClose}
-                className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-paper px-3.5 py-2 text-xs font-bold text-ink ring-1 ring-ink/10 transition hover:ring-ink"
+                className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full bg-paper px-2.5 py-2 text-xs font-bold text-ink ring-1 ring-ink/10 transition hover:ring-ink sm:px-3.5"
               >
-                <ArrowLeft className="h-3.5 w-3.5" />
-                Volver a la app
+                <ArrowLeft className="h-3.5 w-3.5 shrink-0" />
+                <span className="truncate">Volver</span>
               </button>
             ) : (
               <Link
                 href="/"
-                className="inline-flex items-center gap-1.5 rounded-full bg-paper px-3.5 py-2 text-xs font-bold text-ink ring-1 ring-ink/10 transition hover:ring-ink"
+                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-paper px-2.5 py-2 text-xs font-bold text-ink ring-1 ring-ink/10 transition hover:ring-ink sm:px-3.5"
               >
-                <ExternalLink className="h-3.5 w-3.5" />
-                Ver web
+                <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                <span className="truncate">Ver web</span>
               </Link>
             )}
 
             <button
               type="button"
+              onClick={() => void fetchMetrics(false, true)}
+              disabled={manualRefreshing}
+              className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full bg-brand px-2.5 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-dark disabled:opacity-60 sm:px-4"
+            >
+              <RefreshCw className={cn("h-3.5 w-3.5 shrink-0", manualRefreshing && "animate-spin")} />
+              <span className="truncate">Actualizar</span>
+            </button>
+
+            <button
+              type="button"
               onClick={() => setAutoRefresh((v) => !v)}
               className={cn(
-                "inline-flex cursor-pointer items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold ring-1 transition",
+                "inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full px-2.5 py-2 text-xs font-bold ring-1 transition sm:px-3.5",
                 autoRefresh
                   ? "bg-brand/10 text-brand ring-brand/25"
                   : "bg-paper text-ink/60 ring-ink/10"
               )}
             >
-              <Activity className="h-3.5 w-3.5" />
-              Auto 15s: {autoRefresh ? "ON" : "OFF"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => void fetchMetrics(false, true)}
-              disabled={manualRefreshing}
-              className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-brand px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-dark disabled:opacity-60"
-            >
-              <RefreshCw className={cn("h-3.5 w-3.5", manualRefreshing && "animate-spin")} />
-              Actualizar
+              <Activity className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">15s: {autoRefresh ? "ON" : "OFF"}</span>
             </button>
 
             <button
               type="button"
               onClick={exportCsv}
-              className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-paper px-3.5 py-2 text-xs font-bold text-ink ring-1 ring-ink/10 transition hover:ring-ink"
+              className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full bg-paper px-2.5 py-2 text-xs font-bold text-ink ring-1 ring-ink/10 transition hover:ring-ink sm:px-3.5"
             >
-              <Download className="h-3.5 w-3.5" />
-              CSV
+              <Download className="h-3.5 w-3.5 shrink-0" />
+              <span>CSV</span>
             </button>
 
             <button
               type="button"
               onClick={exportJson}
-              className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-paper px-3.5 py-2 text-xs font-bold text-ink ring-1 ring-ink/10 transition hover:ring-ink"
+              className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full bg-paper px-2.5 py-2 text-xs font-bold text-ink ring-1 ring-ink/10 transition hover:ring-ink sm:px-3.5"
             >
-              <Download className="h-3.5 w-3.5" />
-              JSON
+              <Download className="h-3.5 w-3.5 shrink-0" />
+              <span>JSON</span>
             </button>
 
             <button
               type="button"
               onClick={handleLogout}
               title="Cerrar sesión del panel"
-              className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-paper px-3.5 py-2 text-xs font-bold text-ink/70 ring-1 ring-ink/10 transition hover:bg-ink hover:text-white"
+              className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full bg-paper px-2.5 py-2 text-xs font-bold text-ink/70 ring-1 ring-ink/10 transition hover:bg-ink hover:text-white sm:px-3.5"
             >
-              <LogOut className="h-3.5 w-3.5" />
-              Salir
+              <LogOut className="h-3.5 w-3.5 shrink-0" />
+              <span>Salir</span>
             </button>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto flex max-w-7xl flex-col gap-8 px-5 pt-8">
+      <main className="mx-auto flex max-w-7xl flex-col gap-5 px-3.5 pt-5 sm:gap-8 sm:px-5 sm:pt-8">
         {(!online || usingOfflineCache) && (
           <div
             role="status"
-            className="flex items-center gap-2.5 rounded-2xl bg-sky/10 px-5 py-3.5 text-sm font-semibold text-ink ring-1 ring-sky/30"
+            className="flex items-start gap-2.5 rounded-2xl bg-sky/10 px-4 py-3 text-xs font-semibold text-ink ring-1 ring-sky/30 sm:items-center sm:px-5 sm:py-3.5 sm:text-sm"
           >
-            <WifiOff className="h-4 w-4 shrink-0 text-brand" aria-hidden="true" />
+            <WifiOff className="mt-0.5 h-4 w-4 shrink-0 text-brand sm:mt-0" aria-hidden="true" />
             <span>
               Modo sin conexión · Mostrando las métricas registradas localmente y la última copia sincronizada.
             </span>
@@ -664,7 +664,7 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
         )}
 
         {!driveConnected && (
-          <div className="flex flex-col justify-between gap-4 rounded-2xl bg-tangerine/10 p-5 ring-1 ring-tangerine/30 sm:flex-row sm:items-center">
+          <div className="flex flex-col justify-between gap-3 rounded-2xl bg-tangerine/10 p-4 ring-1 ring-tangerine/30 sm:flex-row sm:items-center sm:gap-4 sm:p-5">
             <div className="space-y-1">
               <p className="text-sm font-bold text-ink">
                 Sincronización global con Google Drive pendiente de activar
@@ -676,7 +676,7 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
             <button
               type="button"
               onClick={openScriptModal}
-              className="shrink-0 cursor-pointer rounded-full bg-ink px-4 py-2.5 text-xs font-bold text-white transition hover:bg-brand"
+              className="w-full shrink-0 cursor-pointer rounded-full bg-ink px-4 py-2.5 text-center text-xs font-bold text-white transition hover:bg-brand sm:w-auto"
             >
               Ver script para Drive
             </button>
@@ -684,51 +684,63 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
         )}
 
         {/* Termómetro de usabilidad */}
-        <section className="relative overflow-hidden rounded-3xl bg-ink p-6 text-white shadow-lg sm:p-8">
-          <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
+        <section className="relative overflow-hidden rounded-2xl bg-ink p-4 text-white shadow-lg sm:rounded-3xl sm:p-8">
+          <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-center lg:gap-6">
             <div className="space-y-2">
               <span
                 className={cn(
-                  "inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider",
+                  "inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider sm:text-xs",
                   derived.thermometer.tone
                 )}
               >
-                <BarChart3 className="h-3.5 w-3.5" />
+                <BarChart3 className="h-3.5 w-3.5 shrink-0" />
                 {derived.thermometer.label}
               </span>
-              <h2 className="font-display text-3xl font-extrabold uppercase sm:text-4xl">
+              <h2 className="font-display text-2xl font-extrabold uppercase leading-tight sm:text-4xl">
                 Termómetro de uso de la página
               </h2>
-              <p className="max-w-2xl text-sm text-white/75">{derived.thermometer.detail}</p>
+              <p className="max-w-2xl text-xs leading-relaxed text-white/75 sm:text-sm">
+                {derived.thermometer.detail}
+              </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-sky">Activos (5 min)</p>
-                <p className="mt-1 font-display text-3xl font-extrabold tabular-nums">{derived.active5m}</p>
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
+              <div className="rounded-2xl bg-white/10 p-3 ring-1 ring-white/10 sm:p-4">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-sky sm:text-[11px]">
+                  Activos (5 min)
+                </p>
+                <p className="mt-1 font-display text-2xl font-extrabold tabular-nums sm:text-3xl">
+                  {derived.active5m}
+                </p>
               </div>
-              <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-sky">Activos (1 h)</p>
-                <p className="mt-1 font-display text-3xl font-extrabold tabular-nums">{derived.active1h}</p>
+              <div className="rounded-2xl bg-white/10 p-3 ring-1 ring-white/10 sm:p-4">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-sky sm:text-[11px]">
+                  Activos (1 h)
+                </p>
+                <p className="mt-1 font-display text-2xl font-extrabold tabular-nums sm:text-3xl">
+                  {derived.active1h}
+                </p>
               </div>
-              <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-lime">Uso real</p>
-                <p className="mt-1 font-display text-3xl font-extrabold tabular-nums">
+              <div className="rounded-2xl bg-white/10 p-3 ring-1 ring-white/10 sm:p-4">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-lime sm:text-[11px]">
+                  Uso real
+                </p>
+                <p className="mt-1 font-display text-2xl font-extrabold tabular-nums sm:text-3xl">
                   {derived.engagementRate}%
                 </p>
               </div>
-              <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-tangerine">
+              <div className="rounded-2xl bg-white/10 p-3 ring-1 ring-white/10 sm:p-4">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-tangerine sm:text-[11px]">
                   Secc. / visita
                 </p>
-                <p className="mt-1 font-display text-3xl font-extrabold tabular-nums">
+                <p className="mt-1 font-display text-2xl font-extrabold tabular-nums sm:text-3xl">
                   {derived.avgSectionsPerSession}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-4 text-xs text-white/55">
+          <div className="mt-4 flex flex-col items-start gap-1 border-t border-white/10 pt-3.5 text-[11px] text-white/55 sm:mt-5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-2 sm:pt-4 sm:text-xs">
             <span>
               Última actualización de datos: {formatDateTimeAR(snapshot.updatedAt)} (hora Argentina)
             </span>
@@ -737,7 +749,7 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
         </section>
 
         {/* Tarjetas KPI */}
-        <section aria-label="Indicadores principales" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <section aria-label="Indicadores principales" className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-3 xl:grid-cols-6">
           <KpiCard
             icon={Users}
             color="bg-brand"
@@ -783,16 +795,16 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
         </section>
 
         {/* Embudo de secciones + Dispositivos y Acciones */}
-        <section className="grid gap-6 lg:grid-cols-[1.45fr_1fr]">
-          <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-ink/10">
-            <div className="mb-5 flex items-center justify-between gap-2">
+        <section className="grid gap-5 sm:gap-6 lg:grid-cols-[1.45fr_1fr]">
+          <div className="min-w-0 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-ink/10 sm:rounded-3xl sm:p-6">
+            <div className="mb-4 flex flex-col items-start gap-1 sm:mb-5 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">Recorrido</p>
                 <h2 className="font-display text-2xl font-extrabold uppercase text-ink">
                   Alcance por sección
                 </h2>
               </div>
-              <span className="text-xs font-semibold text-ink/55">
+              <span className="text-[11px] font-semibold text-ink/55 sm:text-xs">
                 Vistas reales (≥ 1.2s en pantalla) y clics de menú
               </span>
             </div>
@@ -814,9 +826,9 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
 
                 return (
                   <div key={id} className="space-y-1.5">
-                    <div className="flex items-center justify-between gap-2 text-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 text-sm">
                       <span className="font-bold text-ink">{SECTION_LABELS[id]}</span>
-                      <div className="flex items-center gap-3 text-xs font-semibold text-ink/65">
+                      <div className="flex items-center gap-2.5 text-[11px] font-semibold text-ink/65 sm:gap-3 sm:text-xs">
                         <span>{clicks} clics menú</span>
                         <span className="font-bold text-ink tabular-nums">
                           {views} vistas ({reachPct}%)
@@ -838,9 +850,9 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
             </div>
           </div>
 
-          <div className="flex flex-col gap-6">
+          <div className="flex min-w-0 flex-col gap-5 sm:gap-6">
             {/* Dispositivos y modo */}
-            <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-ink/10">
+            <div className="min-w-0 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-ink/10 sm:rounded-3xl sm:p-6">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">Entorno</p>
               <h2 className="mb-4 font-display text-2xl font-extrabold uppercase text-ink">
                 Dispositivos y acceso
@@ -893,57 +905,68 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
             </div>
 
             {/* Utilidades rápidas */}
-            <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-ink/10">
+            <div className="min-w-0 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-ink/10 sm:rounded-3xl sm:p-6">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">Acciones útiles</p>
               <h2 className="mb-4 font-display text-2xl font-extrabold uppercase text-ink">
                 Sede, stream y contacto
               </h2>
-              <ul className="grid grid-cols-2 gap-2.5 text-xs">
-                <li className="col-span-2 flex items-center justify-between rounded-xl bg-berry/10 px-3.5 py-2.5 ring-1 ring-berry/20">
-                  <span className="flex items-center gap-1.5 font-bold text-ink">
-                    <Radio className="h-3.5 w-3.5 text-berry" /> Clics en Stream en vivo
+              <ul className="grid grid-cols-2 gap-2 text-xs sm:gap-2.5">
+                <li className="col-span-2 flex items-center justify-between gap-2 rounded-xl bg-berry/10 px-3 py-2.5 ring-1 ring-berry/20 sm:px-3.5">
+                  <span className="flex min-w-0 items-center gap-1.5 font-bold text-ink">
+                    <Radio className="h-3.5 w-3.5 shrink-0 text-berry" />
+                    <span className="truncate">Clics en Stream en vivo</span>
                   </span>
-                  <strong className="font-display text-lg text-berry">
+                  <strong className="shrink-0 font-display text-lg text-berry">
                     {snapshot.totals.streamClicks}
                   </strong>
                 </li>
-                <li className="flex items-center justify-between rounded-xl bg-paper px-3.5 py-2.5">
-                  <span className="flex items-center gap-1.5 font-semibold text-ink/75">
-                    <MapPin className="h-3.5 w-3.5 text-brand" /> Ampliar mapa
+                <li className="flex items-center justify-between gap-2 rounded-xl bg-paper px-3 py-2.5 sm:px-3.5">
+                  <span className="flex min-w-0 items-center gap-1.5 font-semibold text-ink/75">
+                    <MapPin className="h-3.5 w-3.5 shrink-0 text-brand" />
+                    <span className="truncate">Ampliar mapa</span>
                   </span>
-                  <strong className="font-display text-lg text-ink">{snapshot.totals.mapExpands}</strong>
+                  <strong className="shrink-0 font-display text-lg text-ink">
+                    {snapshot.totals.mapExpands}
+                  </strong>
                 </li>
-                <li className="flex items-center justify-between rounded-xl bg-paper px-3.5 py-2.5">
-                  <span className="flex items-center gap-1.5 font-semibold text-ink/75">
-                    <MapPin className="h-3.5 w-3.5 text-lime" /> Cómo llegar
+                <li className="flex items-center justify-between gap-2 rounded-xl bg-paper px-3 py-2.5 sm:px-3.5">
+                  <span className="flex min-w-0 items-center gap-1.5 font-semibold text-ink/75">
+                    <MapPin className="h-3.5 w-3.5 shrink-0 text-lime" />
+                    <span className="truncate">Cómo llegar</span>
                   </span>
-                  <strong className="font-display text-lg text-ink">
+                  <strong className="shrink-0 font-display text-lg text-ink">
                     {snapshot.totals.directionsClicks}
                   </strong>
                 </li>
-                <li className="flex items-center justify-between rounded-xl bg-paper px-3.5 py-2.5">
-                  <span className="flex items-center gap-1.5 font-semibold text-ink/75">
-                    <Copy className="h-3.5 w-3.5 text-tangerine" /> Copiar dir.
+                <li className="flex items-center justify-between gap-2 rounded-xl bg-paper px-3 py-2.5 sm:px-3.5">
+                  <span className="flex min-w-0 items-center gap-1.5 font-semibold text-ink/75">
+                    <Copy className="h-3.5 w-3.5 shrink-0 text-tangerine" />
+                    <span className="truncate">Copiar dir.</span>
                   </span>
-                  <strong className="font-display text-lg text-ink">
+                  <strong className="shrink-0 font-display text-lg text-ink">
                     {snapshot.totals.addressCopies}
                   </strong>
                 </li>
-                <li className="flex items-center justify-between rounded-xl bg-paper px-3.5 py-2.5">
-                  <span className="flex items-center gap-1.5 font-semibold text-ink/75">
-                    <Share2 className="h-3.5 w-3.5 text-sky" /> Compartir
+                <li className="flex items-center justify-between gap-2 rounded-xl bg-paper px-3 py-2.5 sm:px-3.5">
+                  <span className="flex min-w-0 items-center gap-1.5 font-semibold text-ink/75">
+                    <Share2 className="h-3.5 w-3.5 shrink-0 text-sky" />
+                    <span className="truncate">Compartir</span>
                   </span>
-                  <strong className="font-display text-lg text-ink">{snapshot.totals.shareClicks}</strong>
+                  <strong className="shrink-0 font-display text-lg text-ink">
+                    {snapshot.totals.shareClicks}
+                  </strong>
                 </li>
-                <li className="flex items-center justify-between rounded-xl bg-paper px-3.5 py-2.5">
-                  <span className="font-semibold text-ink/75">WhatsApp</span>
-                  <strong className="font-display text-lg text-ink">
+                <li className="flex items-center justify-between gap-2 rounded-xl bg-paper px-3 py-2.5 sm:px-3.5">
+                  <span className="truncate font-semibold text-ink/75">WhatsApp</span>
+                  <strong className="shrink-0 font-display text-lg text-ink">
                     {snapshot.totals.whatsappClicks}
                   </strong>
                 </li>
-                <li className="flex items-center justify-between rounded-xl bg-paper px-3.5 py-2.5">
-                  <span className="font-semibold text-ink/75">Email</span>
-                  <strong className="font-display text-lg text-ink">{snapshot.totals.emailClicks}</strong>
+                <li className="flex items-center justify-between gap-2 rounded-xl bg-paper px-3 py-2.5 sm:px-3.5">
+                  <span className="truncate font-semibold text-ink/75">Email</span>
+                  <strong className="shrink-0 font-display text-lg text-ink">
+                    {snapshot.totals.emailClicks}
+                  </strong>
                 </li>
               </ul>
             </div>
@@ -951,16 +974,18 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
         </section>
 
         {/* Tráfico por hora y por día */}
-        <section className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
-          <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-ink/10">
-            <div className="mb-4 flex items-center justify-between">
+        <section className="grid gap-5 sm:gap-6 lg:grid-cols-[1.5fr_1fr]">
+          <div className="min-w-0 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-ink/10 sm:rounded-3xl sm:p-6">
+            <div className="mb-4 flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">Horarios pico</p>
                 <h2 className="font-display text-2xl font-extrabold uppercase text-ink">
                   Sesiones por hora (ARG)
                 </h2>
               </div>
-              <span className="text-xs font-semibold text-ink/55">Últimas 24 franjas activas</span>
+              <span className="text-[11px] font-semibold text-ink/55 sm:text-xs">
+                Últimas 24 franjas activas
+              </span>
             </div>
 
             {derived.hourEntries.length === 0 ? (
@@ -995,7 +1020,7 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
             )}
           </div>
 
-          <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-ink/10">
+          <div className="min-w-0 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-ink/10 sm:rounded-3xl sm:p-6">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">Por fecha</p>
             <h2 className="mb-4 font-display text-2xl font-extrabold uppercase text-ink">
               Actividad diaria
@@ -1006,9 +1031,9 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
             ) : (
               <ul className="divide-y divide-ink/10">
                 {derived.dayEntries.map(([day, bucket]) => (
-                  <li key={day} className="flex items-center justify-between py-3 text-sm">
+                  <li key={day} className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm">
                     <span className="font-bold text-ink">{day}</span>
-                    <div className="flex items-center gap-3 text-xs">
+                    <div className="flex flex-wrap items-center gap-2 text-xs">
                       <span className="rounded-full bg-brand/10 px-2.5 py-1 font-bold text-brand">
                         {bucket.sessions} sesiones
                       </span>
@@ -1024,7 +1049,7 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
         </section>
 
         {/* Rankings de interés */}
-        <section className="grid gap-6 md:grid-cols-2">
+        <section className="grid gap-5 sm:gap-6 md:grid-cols-2">
           <RankCard
             icon={Users}
             color="text-brand"
@@ -1056,15 +1081,15 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
         </section>
 
         {/* Actividad reciente */}
-        <section className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-ink/10">
-          <div className="mb-4 flex items-center justify-between">
+        <section className="min-w-0 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-ink/10 sm:rounded-3xl sm:p-6">
+          <div className="mb-4 flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">Tiempo real</p>
               <h2 className="font-display text-2xl font-extrabold uppercase text-ink">
                 Últimas interacciones registradas
               </h2>
             </div>
-            <span className="text-xs font-semibold text-ink/55">
+            <span className="text-[11px] font-semibold text-ink/55 sm:text-xs">
               Últimos {snapshot.recentEvents.length} eventos
             </span>
           </div>
@@ -1078,13 +1103,13 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
               {snapshot.recentEvents.map((ev) => (
                 <li
                   key={ev.id}
-                  className="flex flex-wrap items-center justify-between gap-2 py-2.5 text-sm"
+                  className="flex flex-col items-start gap-1.5 py-3 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-2 sm:py-2.5"
                 >
-                  <div className="flex items-center gap-2.5">
-                    {ev.type === "offline_usage" && <WifiOff className="h-4 w-4 text-tangerine" />}
-                    <span className="font-semibold text-ink">{ev.label}</span>
+                  <div className="flex min-w-0 items-start gap-2 sm:items-center sm:gap-2.5">
+                    {ev.type === "offline_usage" && <WifiOff className="mt-0.5 h-4 w-4 shrink-0 text-tangerine sm:mt-0" />}
+                    <span className="break-words font-semibold text-ink">{ev.label}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-ink/60">
+                  <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-ink/60 sm:gap-2 sm:text-xs">
                     <span className="rounded-full bg-paper px-2 py-0.5 font-bold uppercase text-ink/70">
                       {ev.device}
                     </span>
@@ -1107,11 +1132,11 @@ export function UsabilityPanel({ onClose }: { onClose?: () => void }) {
           aria-modal="true"
           aria-label="Sincronizar con Google Drive"
           onClick={() => setShowScriptModal(false)}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/80 p-3 backdrop-blur-sm sm:p-4"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl sm:p-8"
+            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-4 shadow-2xl sm:rounded-3xl sm:p-8"
           >
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
@@ -1197,15 +1222,19 @@ function KpiCard({
   sub: string
 }) {
   return (
-    <div className="flex flex-col justify-between rounded-2xl bg-white p-5 shadow-sm ring-1 ring-ink/10">
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-bold uppercase tracking-wider text-ink/60">{label}</span>
-        <span className={cn("flex h-9 w-9 items-center justify-center rounded-xl text-white", color)}>
+    <div className="flex min-w-0 flex-col justify-between rounded-2xl bg-white p-3.5 shadow-sm ring-1 ring-ink/10 sm:p-5">
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-[11px] font-bold uppercase leading-tight tracking-wider text-ink/60 sm:text-xs">
+          {label}
+        </span>
+        <span className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-white sm:h-9 sm:w-9", color)}>
           <Icon className="h-4 w-4" />
         </span>
       </div>
-      <p className="mt-3 font-display text-4xl font-extrabold tabular-nums text-ink">{value}</p>
-      <p className="mt-1 text-xs font-medium text-ink/60">{sub}</p>
+      <p className="mt-2 font-display text-2xl font-extrabold tabular-nums text-ink sm:mt-3 sm:text-4xl">
+        {value}
+      </p>
+      <p className="mt-1 text-[11px] font-medium leading-snug text-ink/60 sm:text-xs">{sub}</p>
     </div>
   )
 }
@@ -1225,10 +1254,12 @@ function RankCard({
 }) {
   const max = Math.max(1, ...items.map(([, c]) => c))
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-ink/10">
+    <div className="min-w-0 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-ink/10 sm:rounded-3xl sm:p-6">
       <div className="mb-4 flex items-center gap-2.5">
-        <Icon className={cn("h-5 w-5", color)} />
-        <h2 className="font-display text-2xl font-extrabold uppercase text-ink">{title}</h2>
+        <Icon className={cn("h-5 w-5 shrink-0", color)} />
+        <h2 className="font-display text-2xl font-extrabold uppercase leading-tight text-ink">
+          {title}
+        </h2>
       </div>
       {items.length === 0 ? (
         <p className="py-8 text-center text-sm text-ink/50">{emptyText}</p>
