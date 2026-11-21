@@ -9,6 +9,7 @@ import {
   fixtureMeta,
   hockeyFixtureMeta,
   hockeyZones,
+  rugbyZones,
   type HockeyMatchCell,
 } from "@/data/encuentro"
 import { SectionHeading } from "@/components/SectionHeading"
@@ -46,6 +47,7 @@ export function Fixture() {
   const [court, setCourt] = useState<CourtFilter>("all")
   const [hockeyZone, setHockeyZone] = useState<HockeyZoneFilter>("all")
   const [hockeyCourt, setHockeyCourt] = useState<HockeyCourtFilter>("all")
+  const [showRugbyZones, setShowRugbyZones] = useState(false)
   const [showHockeyZones, setShowHockeyZones] = useState(false)
   const [query, setQuery] = useState("")
   const [openIds, setOpenIds] = useState<Set<string>>(
@@ -343,6 +345,115 @@ export function Fixture() {
           </li>
         </ul>
 
+        {/* Distribución de zonas y canchas (Rugby) */}
+        {sport === "rugby" && (
+          <div className="mb-6 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-ink/10">
+            <button
+              type="button"
+              aria-expanded={showRugbyZones}
+              onClick={() => setShowRugbyZones((v) => !v)}
+              className="flex w-full cursor-pointer items-center justify-between gap-3 px-5 py-3.5 text-left transition hover:bg-paper/60"
+            >
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-brand/15 px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-wider text-brand">
+                  Zonas y canchas
+                </span>
+                <span className="text-sm font-bold text-ink">
+                  Composición de zonas de Pre Mix (Cat. A), Recreativo (Cat. B) y Especiales
+                </span>
+              </div>
+              <ChevronDown
+                className={cn(
+                  "h-5 w-5 shrink-0 text-brand transition-transform duration-200",
+                  showRugbyZones && "rotate-180"
+                )}
+              />
+            </button>
+
+            {showRugbyZones && (
+              <div className="space-y-4 border-t border-ink/10 p-5">
+                <div className="grid gap-4 lg:grid-cols-2">
+                  {/* Pre Mix (Cat. A) */}
+                  <div className="rounded-2xl bg-brand/5 p-4 ring-1 ring-brand/20">
+                    <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                      <p className="font-display text-lg font-extrabold uppercase text-ink">
+                        Pre Mix (Cat. A)
+                      </p>
+                      <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-bold text-brand ring-1 ring-brand/20">
+                        Canchas 1 y 4
+                      </span>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      {rugbyZones.preMix.map((z) => (
+                        <div key={z.name} className="rounded-xl bg-white p-3 ring-1 ring-ink/10">
+                          <p className="mb-2 text-xs font-extrabold uppercase tracking-wider text-brand">
+                            {z.name}
+                          </p>
+                          <ul className="space-y-1 text-xs font-bold text-ink">
+                            {z.teams.map((t) => (
+                              <li key={t}>{t}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Recreativo (Cat. B) */}
+                  <div className="rounded-2xl bg-berry/5 p-4 ring-1 ring-berry/20">
+                    <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                      <p className="font-display text-lg font-extrabold uppercase text-ink">
+                        Recreativo (Cat. B)
+                      </p>
+                      <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-bold text-berry ring-1 ring-berry/20">
+                        Canchas 2a, 2b, 3a y 3b
+                      </span>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {rugbyZones.recreativo.map((z) => (
+                        <div key={z.name} className="rounded-xl bg-white p-3 ring-1 ring-ink/10">
+                          <p className="mb-2 text-xs font-extrabold uppercase tracking-wider text-berry">
+                            {z.name}
+                          </p>
+                          <ul className="space-y-1 text-xs font-bold text-ink">
+                            {z.teams.map((t) => (
+                              <li key={t}>{t}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Especiales (Fuera de Zona) */}
+                <div className="rounded-2xl bg-tangerine/10 p-4 ring-1 ring-tangerine/30">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="font-display text-base font-extrabold uppercase text-ink">
+                        Especiales · Fuera de Zona
+                      </p>
+                      <p className="text-xs font-semibold text-ink/65">
+                        Encuentros especiales programados en Cancha 1
+                      </p>
+                    </div>
+                    <ul className="flex flex-wrap gap-2">
+                      {rugbyZones.especiales.map((team) => (
+                        <li
+                          key={team}
+                          className="rounded-full bg-white px-3 py-1 text-xs font-bold text-ink ring-1 ring-ink/10"
+                        >
+                          {team}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Distribución de zonas y canchas (Hockey) */}
         {sport === "hockey" && (
           <div className="mb-6 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-ink/10">
@@ -468,7 +579,7 @@ export function Fixture() {
                   id: "tarde",
                   label:
                     sport === "rugby"
-                      ? "Bloque Tarde (14:00 a 16:15 hs)"
+                      ? "Bloque Tarde (14:00 a 16:35 hs)"
                       : "Bloque Tarde (13:00 a 16:00 hs)",
                 },
               ] as const
